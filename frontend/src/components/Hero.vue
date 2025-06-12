@@ -1,5 +1,4 @@
 <template>
-    
   <section class="hero">
     <div class="hero-content">
       <h1 class="hero-title">Student Management System</h1>
@@ -24,12 +23,11 @@ export default {
 <style scoped>
 .hero {
   width: 100%;
-  min-height: 80vh;
+  min-height: calc(100vh - 67px);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
 }
 
 .hero-content {

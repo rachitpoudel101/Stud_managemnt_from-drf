@@ -79,51 +79,31 @@ export default {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/token/', this.loginData)
 
-                // Handle different possible response structures
-                let accessToken = null;
-                let refreshToken = null;
-                let user = null;
-                let message = '';
+                console.log('Login response:', response.data);
                 
-                // Check for different token response formats
-                if (response.data.tokens && response.data.tokens.access) {
-                    accessToken = response.data.tokens.access;
-                    refreshToken = response.data.tokens.refresh;
-                } else if (response.data.access) {
-                    accessToken = response.data.access;
-                    refreshToken = response.data.refresh;
-                } else if (response.data.token) {
-                    accessToken = response.data.token;
-                } else if (response.data.access_token) {
-                    accessToken = response.data.access_token;
-                    refreshToken = response.data.refresh_token;
-                }
-                if (response.data.user) {
-                    user = response.data.user;
-                }
-                
-                // Check for message
-                message = response.data.message || 'Login successful!';
-                
-                if (accessToken) {
-                    // Store user data and tokens in localStorage
-                    if (user) {
-                        localStorage.setItem('user', JSON.stringify(user));
-                        localStorage.setItem('userRole', user.role || 'user');
-                    }
-                    localStorage.setItem('token', accessToken);
-                    if (refreshToken) {
-                        localStorage.setItem('refresh_token', refreshToken);
+                // Check for access token directly
+                if (response.data.access) {
+                    // Store user data if available
+                    if (response.data.user) {
+                        localStorage.setItem('user', JSON.stringify(response.data.user));
+                        localStorage.setItem('userRole', response.data.user.role || 'user');
                     }
                     
-                    this.successMessage = message;
+                    // Store tokens
+                    localStorage.setItem('token', response.data.access);
+                    if (response.data.refresh) {
+                        localStorage.setItem('refresh_token', response.data.refresh);
+                    }
+                    
+                    this.successMessage = 'Login successful!';
 
                     setTimeout(() => {
                         this.$router.push('/dashboard');
-                    },10);
+                    }, 10);
                 } else {
                     console.error('No access token found in response');
                     this.errorMessage = 'Login response missing token. Please check server configuration.';
+                    console.log('Response data:', response.data);
                 }
                 
             } catch (error) {

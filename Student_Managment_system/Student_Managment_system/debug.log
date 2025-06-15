@@ -1,0 +1,93 @@
+INFO 2025-06-15 12:20:59,418 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 12:21:02,218 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 12:21:02,219 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
+INFO 2025-06-15 12:21:13,760 autoreload /home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/students/views.py changed, reloading.
+INFO 2025-06-15 12:21:13,987 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 12:21:18,554 basehttp "OPTIONS /api/users/?role=student HTTP/1.1" 200 0
+INFO 2025-06-15 12:21:18,567 basehttp "OPTIONS /api/subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 12:21:18,584 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
+INFO 2025-06-15 12:21:18,650 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 12:21:20,074 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 197
+ERROR 2025-06-15 12:21:22,259 log Internal Server Error: /api/student-profiles/1/assign-subjects/
+Traceback (most recent call last):
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 421, in initial
+    self.check_permissions(request)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 337, in check_permissions
+    for permission in self.get_permissions():
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/students/views.py", line 68, in get_permissions
+    return [IsTeacher() | IsAdmin()]
+            ~~~~~~~~~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for |: 'IsTeacher' and 'IsAdmin'
+ERROR 2025-06-15 12:21:22,261 basehttp "POST /api/student-profiles/1/assign-subjects/ HTTP/1.1" 500 108000
+INFO 2025-06-15 12:21:40,478 basehttp "OPTIONS /api/users/?role=student HTTP/1.1" 200 0
+INFO 2025-06-15 12:21:40,482 basehttp "OPTIONS /api/subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 12:21:40,516 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
+INFO 2025-06-15 12:21:40,539 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 12:22:30,276 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 197
+ERROR 2025-06-15 12:22:31,813 log Internal Server Error: /api/student-profiles/1/assign-subjects/
+Traceback (most recent call last):
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/viewsets.py", line 125, in view
+    return self.dispatch(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 503, in dispatch
+    self.initial(request, *args, **kwargs)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 421, in initial
+    self.check_permissions(request)
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/venv/lib/python3.12/site-packages/rest_framework/views.py", line 337, in check_permissions
+    for permission in self.get_permissions():
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/students/views.py", line 68, in get_permissions
+    return [IsTeacher() | IsAdmin()]
+            ~~~~~~~~~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for |: 'IsTeacher' and 'IsAdmin'
+ERROR 2025-06-15 12:22:31,815 basehttp "POST /api/student-profiles/1/assign-subjects/ HTTP/1.1" 500 108000
+INFO 2025-06-15 12:23:08,024 autoreload /home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/users/permissions.py changed, reloading.
+INFO 2025-06-15 12:23:08,571 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 12:23:37,336 autoreload /home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/students/views.py changed, reloading.
+INFO 2025-06-15 12:23:37,816 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 12:23:47,265 autoreload /home/rachitpoudel/Desktop/Stud_managemnt_from-drf/Student_Managment_system/Student_Managment_system/users/permissions.py changed, reloading.
+INFO 2025-06-15 12:23:47,606 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 12:23:49,877 basehttp "OPTIONS /api/users/?role=student HTTP/1.1" 200 0
+INFO 2025-06-15 12:23:49,885 basehttp "OPTIONS /api/subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 12:23:49,957 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 12:23:49,962 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
+INFO 2025-06-15 12:23:51,526 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 197
+INFO 2025-06-15 12:23:53,050 basehttp "POST /api/student-profiles/1/assign-subjects/ HTTP/1.1" 200 306

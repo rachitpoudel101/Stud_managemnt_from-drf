@@ -3,11 +3,11 @@ from rest_framework.routers import DefaultRouter
 from .views import UserViewSet, CustomTokenObtainPairView
 
 router = DefaultRouter()
-router.register('users', UserViewSet)
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('token/', CustomTokenObtainPairView.as_view(), name='custom_token_obtain_pair'),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
 ]
 
 # No changes needed - just explaining the endpoints:

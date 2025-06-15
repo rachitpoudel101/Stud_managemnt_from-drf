@@ -5,6 +5,10 @@ import Login from '../components/Login.vue'
 import Dashboard from '../components/Dashbaord.vue'
 import AddTeacher from '../components/Add_teacher.vue'
 import AddStudent from '../components/Add_student.vue'
+import AddSubject from '../components/Add_subject.vue'
+import ManageMarks from '../components/Manage_marks.vue'
+import ViewResults from '../components/View_results.vue'
+import ManageStudents from '../components/Manage_students.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,8 +45,31 @@ const router = createRouter({
       name: 'add-student',
       component: AddStudent,
       meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/admin/add-subject',
+      name: 'add-subject',
+      component: AddSubject,
+      meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+      path: '/teacher/manage-marks',
+      name: 'manage-marks',
+      component: ManageMarks,
+      meta: { requiresAuth: true, requiresTeacher: true }
+    },
+    {
+      path: '/student/view-results',
+      name: 'view-results',
+      component: ViewResults,
+      meta: { requiresAuth: true, requiresStudent: true }
+    },
+    {
+      path: '/manage-students',
+      name: 'manage-students',
+      component: ManageStudents,
+      meta: { requiresAuth: true, requiresTeacherOrAdmin: true }
     }
-
   ]
 })
 
@@ -58,7 +85,16 @@ router.beforeEach((to, from, next) => {
     next('/login');
   } else if (to.meta.requiresAdmin && userRole !== 'admin') {
     console.log('Admin access required, user role is:', userRole);
-    next('/dashboard'); // Redirect non-admin users to dashboard
+    next('/dashboard');
+  } else if (to.meta.requiresTeacher && userRole !== 'teacher') {
+    console.log('Teacher access required, user role is:', userRole);
+    next('/dashboard');
+  } else if (to.meta.requiresStudent && userRole !== 'student') {
+    console.log('Student access required, user role is:', userRole);
+    next('/dashboard');
+  } else if (to.meta.requiresTeacherOrAdmin && userRole !== 'teacher' && userRole !== 'admin') {
+    console.log('Teacher or Admin access required, user role is:', userRole);
+    next('/dashboard');
   } else if (to.name === 'login' && token) {
     console.log('Already logged in, redirecting to dashboard');
     next('/dashboard');

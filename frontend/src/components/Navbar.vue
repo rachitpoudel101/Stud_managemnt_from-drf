@@ -1,12 +1,50 @@
 <template>
-    <div>
-        <nav>
-            <ul>
-                <li>
-                    <router-link to="/sign-up" class="nav-link">Sign Up</router-link>
-                </li>
-                <li>
-                    <router-link to="/login" class="nav-link">Login</router-link>
+    <div class="w-full">
+        <nav class="w-full bg-yellow-500 py-4 shadow-md">
+            <ul class="list-none m-0 p-0 flex flex-col md:flex-row justify-end items-center gap-3 md:gap-12 pr-8">
+                <!-- Show login/signup buttons only when user is not logged in -->
+                <template v-if="!isLoggedIn">
+                    <li class="m-0 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer ">
+                        <router-link to="/sign-up" class="text-white  block w-full h-full">
+                            {{ btn1 }}
+                        </router-link>
+                    </li>
+                    <li class="m-0 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer ">
+                        <router-link to="/login" class="text-white no-underline block w-full h-full">
+                            {{ btn2 }}
+                        </router-link>
+                    </li>
+                </template>
+                
+                <!-- User Profile Dropdown when logged in -->
+                <li v-if="isLoggedIn" class="relative">
+                    <div @click="toggleDropdown" 
+                         class="flex items-center gap-2 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer text-white">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                        <span>{{ userName || 'User' }}</span>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': showDropdown}" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div v-if="showDropdown" 
+                         class="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                        <div class="py-1">
+                            <router-link to="/dashboard" 
+                                       @click="closeDropdown"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">
+                                Dashboard
+                            </router-link>
+                            <hr class="border-gray-200">
+                            <button @click="logout" 
+                                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:outline-none">
+                                Logout
+                            </button>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </nav>
@@ -16,63 +54,95 @@
 <script>
 export default {
     name: 'Navbar',
+    props: {
+        btn1: {
+            default: 'Sign Up'
+        },
+        btn2: {
+            default: 'Login'
+        }
+    },
+    data() {
+        return {
+            showDropdown: false,
+            isLoggedIn: false,
+            userName: ''
+        }
+    },
+    mounted() {
+        this.checkAuthStatus();
+        // Listen for storage changes to update auth status
+        window.addEventListener('storage', this.checkAuthStatus);
+        // Also check on route changes
+        this.$router.afterEach(() => {
+            this.checkAuthStatus();
+        });
+    },
+    beforeUnmount() {
+        window.removeEventListener('storage', this.checkAuthStatus);
+        document.removeEventListener('click', this.handleClickOutside);
+    },
+    methods: {
+        checkAuthStatus() {
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+            
+            this.isLoggedIn = !!token;
+            
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    this.userName = userData.username || userData.first_name || 'User';
+                } catch (e) {
+                    this.userName = 'User';
+                }
+            }
+        },
+        toggleDropdown() {
+            this.showDropdown = !this.showDropdown;
+            
+            if (this.showDropdown) {
+                // Add click outside listener when dropdown is open
+                this.$nextTick(() => {
+                    document.addEventListener('click', this.handleClickOutside);
+                });
+            } else {
+                document.removeEventListener('click', this.handleClickOutside);
+            }
+        },
+        closeDropdown() {
+            this.showDropdown = false;
+            document.removeEventListener('click', this.handleClickOutside);
+        },
+        handleClickOutside(event) {
+            const dropdown = this.$el.querySelector('.relative');
+            if (dropdown && !dropdown.contains(event.target)) {
+                this.closeDropdown();
+            }
+        },
+        async logout() {
+            try {
+                // Clear all stored authentication data
+                localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('userRole');
+                sessionStorage.removeItem('token');
+                sessionStorage.removeItem('refresh_token');
+                sessionStorage.removeItem('user');
+                sessionStorage.removeItem('userRole');
+                
+                // Update component state
+                this.isLoggedIn = false;
+                this.userName = '';
+                this.closeDropdown();
+                
+                // Navigate to home page
+                this.$router.push('/');
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+    }
 };
 </script>
-
-<style scoped>
-div {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-nav {
-  width: 100%;
-  background-color: #0080ff;
-  padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 3rem;
-  padding-right: 2rem;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-li {
-  margin: 0;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-li:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-@media (max-width: 768px) {
-  ul {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  nav {
-    padding: 0.5rem 0;
-  }
-}
-</style>

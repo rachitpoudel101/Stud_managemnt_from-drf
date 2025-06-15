@@ -3,16 +3,15 @@ import Navbar from './components/Navbar.vue';
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen">
     <Navbar />
-    <main class="container mx-auto px-4 py-6">
+    <main>
       <router-view />
     </main>
   </div>
 </template>
 
 <style>
-
 body {
   margin: 0;
   padding: 0;

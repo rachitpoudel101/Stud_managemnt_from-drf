@@ -226,7 +226,7 @@
                 </div>
                 <!-- Refresh button -->
                 <button @click="loadAllUsers" class="text-blue-600 hover:text-blue-800">
-                  🔄 Refresh
+                  Refresh
                 </button>
               </div>
             </div>
@@ -297,7 +297,7 @@
                 Subjects
               </h3>
               <button @click="loadSubjects" class="text-blue-600 hover:text-blue-800">
-                🔄 Refresh
+                 Refresh
               </button>
             </div>
             <div class="p-4">
@@ -330,8 +330,8 @@
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-500">{{ subject.teacher_name || 'No teacher assigned' }}</div>
                       </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button @click="showEditSubject(subject)" class="text-blue-600 hover:text-blue-900 mr-3">
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
+                        <button @click="showEditSubject(subject)" class="text-blue-600 hover:text-blue-900 mr-2">
                           Edit
                         </button>
                         <button @click="confirmDeleteSubject(subject)" class="text-red-600 hover:text-red-900">
@@ -342,6 +342,23 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+          <!-- All Student Results Section -->
+          <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Student Results
+              </h3>
+            </div>
+            <div class="p-6">
+              <p class="mb-4 text-gray-600">View academic performance of all students across subjects.</p>
+              <button 
+                @click="viewAllStudentResults" 
+                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                View All Student Results
+              </button>
             </div>
           </div>
         </div>
@@ -1116,6 +1133,7 @@ export default {
         
         // Update local data
         this.subjects = this.subjects.filter(s => s.id !== this.subjectToDelete.id);
+        this.subjectCount = Math.max(0, this.subjectCount - 1);
         
         this.successMessage = `Subject "${this.subjectToDelete.name}" deleted successfully!`;
         this.closeDeleteSubjectModal();
@@ -1126,6 +1144,27 @@ export default {
         this.isDeleting = false;
       }
     },
-  },
+    
+    // Methods for viewing student results
+    viewSubjectResults(subject) {
+      // Navigate to view results page with subject filter
+      this.$router.push({
+        path: "/student/view-results",
+        query: { 
+          subjectId: subject.id,
+          subjectName: subject.name,
+          viewAsAdmin: this.userRole === 'admin' ? 'true' : 'false' // Add flag to identify admin view
+        }
+      });
+    },
+    
+    viewAllStudentResults() {
+      // Navigate to the view results page without filters
+      this.$router.push({
+        path: "/student/view-results",
+        query: { viewAsAdmin: this.userRole === 'admin' ? 'true' : 'false' }
+      });
+    }
+  }
 };
 </script>

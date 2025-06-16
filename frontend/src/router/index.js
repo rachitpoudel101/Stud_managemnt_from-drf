@@ -62,13 +62,19 @@ const router = createRouter({
       path: '/student/view-results',
       name: 'view-results',
       component: ViewResults,
-      meta: { requiresAuth: true, requiresStudent: true }
+      meta: { requiresAuth: true, requiresStudentOrAdmin: true }
     },
     {
       path: '/manage-students',
       name: 'manage-students',
       component: ManageStudents,
       meta: { requiresAuth: true, requiresTeacherOrAdmin: true }
+    },
+    {
+      path: '/student-results',
+      name: 'student-results',
+      component: ViewResults,
+      meta: { requiresAuth: true }
     }
   ]
 })
@@ -94,6 +100,9 @@ router.beforeEach((to, from, next) => {
     next('/dashboard');
   } else if (to.meta.requiresTeacherOrAdmin && userRole !== 'teacher' && userRole !== 'admin') {
     console.log('Teacher or Admin access required, user role is:', userRole);
+    next('/dashboard');
+  } else if (to.meta.requiresStudentOrAdmin && userRole !== 'student' && userRole !== 'admin') {
+    console.log('Student or Admin access required, user role is:', userRole);
     next('/dashboard');
   } else if (to.name === 'login' && token) {
     console.log('Already logged in, redirecting to dashboard');

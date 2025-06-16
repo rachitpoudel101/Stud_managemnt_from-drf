@@ -91,3 +91,78 @@ INFO 2025-06-15 12:23:49,957 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
 INFO 2025-06-15 12:23:49,962 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
 INFO 2025-06-15 12:23:51,526 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 197
 INFO 2025-06-15 12:23:53,050 basehttp "POST /api/student-profiles/1/assign-subjects/ HTTP/1.1" 200 306
+INFO 2025-06-15 15:45:41,870 autoreload Watching for file changes with StatReloader
+INFO 2025-06-15 15:51:43,129 basehttp "OPTIONS /api/users/ HTTP/1.1" 200 0
+WARNING 2025-06-15 15:51:43,148 log Unauthorized: /api/users/
+WARNING 2025-06-15 15:51:43,149 basehttp "GET /api/users/ HTTP/1.1" 401 172
+INFO 2025-06-15 15:51:45,231 basehttp "OPTIONS /api/users/ HTTP/1.1" 200 0
+WARNING 2025-06-15 15:51:45,243 log Unauthorized: /api/users/
+WARNING 2025-06-15 15:51:45,243 basehttp "GET /api/users/ HTTP/1.1" 401 172
+INFO 2025-06-15 15:52:00,095 basehttp "OPTIONS /api/token/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:00,607 basehttp "POST /api/token/ HTTP/1.1" 200 607
+INFO 2025-06-15 15:52:00,687 basehttp "GET /api/users/ HTTP/1.1" 200 240
+INFO 2025-06-15 15:52:07,167 basehttp "OPTIONS /api/users/?role=student HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:07,168 basehttp "OPTIONS /api/subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:07,183 basehttp "GET /api/users/?role=student HTTP/1.1" 200 240
+INFO 2025-06-15 15:52:07,186 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 15:52:09,211 basehttp "OPTIONS /api/users/2/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:09,235 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 276
+INFO 2025-06-15 15:52:12,548 basehttp "OPTIONS /api/student-profiles/1/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:12,574 basehttp "PATCH /api/student-profiles/1/ HTTP/1.1" 200 276
+INFO 2025-06-15 15:52:16,494 basehttp "OPTIONS /api/student-profiles/1/assign-subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:52:16,522 basehttp "POST /api/student-profiles/1/assign-subjects/ HTTP/1.1" 200 344
+INFO 2025-06-15 15:52:18,730 basehttp "GET /api/users/ HTTP/1.1" 200 240
+INFO 2025-06-15 15:52:41,724 basehttp "POST /api/users/ HTTP/1.1" 201 137
+INFO 2025-06-15 15:52:41,731 basehttp "OPTIONS /api/student-profiles/ HTTP/1.1" 200 0
+WARNING 2025-06-15 15:52:41,785 log Bad Request: /api/student-profiles/
+WARNING 2025-06-15 15:52:41,785 basehttp "POST /api/student-profiles/ HTTP/1.1" 400 116
+INFO 2025-06-15 15:55:00,050 basehttp "POST /api/users/ HTTP/1.1" 201 127
+WARNING 2025-06-15 15:55:00,061 log Bad Request: /api/student-profiles/
+WARNING 2025-06-15 15:55:00,062 basehttp "POST /api/student-profiles/ HTTP/1.1" 400 117
+WARNING 2025-06-15 15:57:39,331 log Bad Request: /api/users/
+WARNING 2025-06-15 15:57:39,332 basehttp "POST /api/users/ HTTP/1.1" 400 58
+INFO 2025-06-15 15:59:47,111 basehttp "POST /api/users/ HTTP/1.1" 201 120
+WARNING 2025-06-15 15:59:47,126 log Bad Request: /api/student-profiles/
+WARNING 2025-06-15 15:59:47,126 basehttp "POST /api/student-profiles/ HTTP/1.1" 400 117
+INFO 2025-06-15 15:59:47,175 basehttp "OPTIONS /api/users/5/ HTTP/1.1" 200 0
+INFO 2025-06-15 15:59:47,237 basehttp "DELETE /api/users/5/ HTTP/1.1" 204 0
+INFO 2025-06-15 16:01:13,290 basehttp "POST /api/token/ HTTP/1.1" 200 618
+INFO 2025-06-15 16:01:14,978 basehttp "OPTIONS /api/marks/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:01:14,992 basehttp "GET /api/marks/ HTTP/1.1" 200 2
+INFO 2025-06-15 16:01:30,575 basehttp "POST /api/token/ HTTP/1.1" 200 607
+INFO 2025-06-15 16:01:30,619 basehttp "GET /api/users/ HTTP/1.1" 200 506
+INFO 2025-06-15 16:02:44,618 basehttp "POST /api/token/ HTTP/1.1" 200 607
+INFO 2025-06-15 16:02:44,657 basehttp "GET /api/users/ HTTP/1.1" 200 506
+INFO 2025-06-15 16:02:46,541 basehttp "GET /api/users/?role=student HTTP/1.1" 200 506
+INFO 2025-06-15 16:02:46,542 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 16:02:50,248 basehttp "OPTIONS /api/users/3/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:02:50,270 basehttp "GET /api/users/3/profile/ HTTP/1.1" 200 251
+INFO 2025-06-15 16:02:52,535 basehttp "OPTIONS /api/student-profiles/2/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:02:52,565 basehttp "PATCH /api/student-profiles/2/ HTTP/1.1" 200 251
+INFO 2025-06-15 16:02:57,921 basehttp "OPTIONS /api/student-profiles/2/assign-subjects/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:02:57,950 basehttp "POST /api/student-profiles/2/assign-subjects/ HTTP/1.1" 200 361
+INFO 2025-06-15 16:03:00,370 basehttp "GET /api/users/ HTTP/1.1" 200 506
+INFO 2025-06-15 16:03:02,779 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 16:03:08,437 basehttp "GET /api/users/ HTTP/1.1" 200 506
+INFO 2025-06-15 16:03:09,447 basehttp "GET /api/subjects/ HTTP/1.1" 200 42
+INFO 2025-06-15 16:03:12,094 basehttp "POST /api/subjects/ HTTP/1.1" 201 39
+INFO 2025-06-15 16:03:12,113 basehttp "GET /api/subjects/ HTTP/1.1" 200 82
+INFO 2025-06-15 16:03:13,149 basehttp "GET /api/users/ HTTP/1.1" 200 506
+INFO 2025-06-15 16:03:14,225 basehttp "GET /api/subjects/ HTTP/1.1" 200 82
+INFO 2025-06-15 16:05:33,237 basehttp "POST /api/users/ HTTP/1.1" 201 128
+INFO 2025-06-15 16:05:33,263 basehttp "POST /api/student-profiles/ HTTP/1.1" 201 277
+INFO 2025-06-15 16:05:43,715 basehttp "POST /api/token/ HTTP/1.1" 200 619
+INFO 2025-06-15 16:05:45,090 basehttp "GET /api/marks/ HTTP/1.1" 200 2
+INFO 2025-06-15 16:06:35,730 basehttp "GET /api/marks/ HTTP/1.1" 200 2
+INFO 2025-06-15 16:12:59,356 basehttp "OPTIONS /api/users/6/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:12:59,373 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277
+INFO 2025-06-15 16:13:05,101 basehttp "OPTIONS /api/users/6/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:13:05,121 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277
+INFO 2025-06-15 16:15:57,626 basehttp "GET /api/marks/ HTTP/1.1" 200 2
+INFO 2025-06-15 16:15:59,006 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277
+INFO 2025-06-15 16:26:00,261 basehttp "OPTIONS /api/users/6/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:26:00,279 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277
+INFO 2025-06-15 16:26:01,246 basehttp "OPTIONS /api/users/6/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:26:01,261 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277
+INFO 2025-06-15 16:41:16,536 basehttp "OPTIONS /api/users/6/profile/ HTTP/1.1" 200 0
+INFO 2025-06-15 16:41:16,556 basehttp "GET /api/users/6/profile/ HTTP/1.1" 200 277

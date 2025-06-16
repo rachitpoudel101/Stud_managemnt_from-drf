@@ -40,8 +40,32 @@
         
         <!-- Subject assignment when student is selected -->
         <div v-if="selectedStudentId" class="mt-6">
-          <h3 class="text-lg font-semibold mb-3">Assign Subjects to {{ getSelectedStudentName() }}</h3>
+          <h3 class="text-lg font-semibold mb-3">Manage {{ getSelectedStudentName() }}</h3>
           
+          <!-- Student Grade section -->
+          <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-medium mb-2">Student Grade</h4>
+            <div class="flex items-center space-x-4">
+              <select 
+                v-model="selectedGrade"
+                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Select Grade</option>
+                <option v-for="grade in gradeOptions" :key="grade.value" :value="grade.value">
+                  {{ grade.label }}
+                </option>
+              </select>
+              
+              <button 
+                @click="updateStudentGrade" 
+                :disabled="!selectedGrade || isSavingGrade"
+                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50">
+                {{ isSavingGrade ? 'Updating...' : 'Update Grade' }}
+              </button>
+            </div>
+          </div>
+          
+          <!-- Subject assignment -->
           <div v-if="isLoadingSubjects" class="text-center py-4">
             <p class="text-gray-500">Loading subjects...</p>
           </div>
@@ -105,7 +129,23 @@ export default {
       isSaving: false,
       successMessage: '',
       errorMessage: '',
-      userRole: localStorage.getItem('userRole') || sessionStorage.getItem('userRole')
+      userRole: localStorage.getItem('userRole') || sessionStorage.getItem('userRole'),
+      selectedGrade: '',
+      isSavingGrade: false,
+      gradeOptions: [
+        { value: '1', label: 'Grade 1' },
+        { value: '2', label: 'Grade 2' },
+        { value: '3', label: 'Grade 3' },
+        { value: '4', label: 'Grade 4' },
+        { value: '5', label: 'Grade 5' },
+        { value: '6', label: 'Grade 6' },
+        { value: '7', label: 'Grade 7' },
+        { value: '8', label: 'Grade 8' },
+        { value: '9', label: 'Grade 9' },
+        { value: '10', label: 'Grade 10' },
+        { value: '11', label: 'Grade 11' },
+        { value: '12', label: 'Grade 12' },
+      ]
     };
   },
   mounted() {
@@ -157,6 +197,7 @@ export default {
       
       this.isLoadingSubjects = true;
       this.selectedSubjects = [];
+      this.selectedGrade = '';
       this.errorMessage = '';
       
       try {
@@ -191,9 +232,11 @@ export default {
           try {
             console.log("Creating new profile for student:", this.selectedStudentId);
             
+            // Include empty subjects array in the request
             const createResponse = await axios.post(`http://127.0.0.1:8000/api/student-profiles/`, {
               user: parseInt(this.selectedStudentId),
-              education_level: "Not specified"
+              education_level: "Not specified",
+              subjects: [] // Add empty subjects array to satisfy the requirement
             }, {
               headers: { 
                 Authorization: `Bearer ${token}`,
@@ -217,6 +260,9 @@ export default {
         if (!this.selectedStudentProfile) {
           throw new Error("Failed to retrieve or create student profile");
         }
+        
+        // Set the selected grade if available
+        this.selectedGrade = this.selectedStudentProfile.grade || '';
       } catch (error) {
         console.error('Error loading or creating student profile:', error);
         if (error.response?.status === 403) {
@@ -299,6 +345,31 @@ export default {
         this.errorMessage = error.message || 'Failed to update subject assignments. Please try again.';
       } finally {
         this.isSaving = false;
+      }
+    },
+    
+    async updateStudentGrade() {
+      if (!this.selectedStudentProfile || !this.selectedGrade) return;
+      
+      this.isSavingGrade = true;
+      this.errorMessage = '';
+      this.successMessage = '';
+      
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        
+        await axios.patch(
+          `http://127.0.0.1:8000/api/student-profiles/${this.selectedStudentProfile.id}/`, 
+          { grade: this.selectedGrade },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        this.successMessage = 'Student grade updated successfully!';
+      } catch (error) {
+        console.error('Error updating grade:', error);
+        this.errorMessage = 'Failed to update student grade. Please try again.';
+      } finally {
+        this.isSavingGrade = false;
       }
     },
     

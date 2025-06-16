@@ -51,6 +51,44 @@
     
     <!-- Student's Section -->
     <div v-if="userRole === 'student'" class="space-y-4 mb-6">
+      <!-- Student's Profile Info -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-700 text-center mb-3">Your Information</h3>
+        
+        <div v-if="isLoadingStudentProfile" class="text-center text-gray-600">
+          <p>Loading profile...</p>
+        </div>
+        
+        <div v-else-if="!studentProfile" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+          <p class="text-yellow-700">Could not load your profile information.</p>
+        </div>
+        
+        <div v-else class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <!-- Grade Information -->
+          <div class="mb-3 pb-3 border-b border-blue-200">
+            <p class="font-medium text-blue-800">Your Grade: 
+              <span class="text-blue-900 font-bold">
+                {{ studentProfile.grade_display || `Grade ${studentProfile.grade}` }}
+              </span>
+            </p>
+          </div>
+          
+          <!-- Assigned Subjects -->
+          <div>
+            <p class="font-medium text-blue-800 mb-2">Your Subjects:</p>
+            <ul v-if="studentSubjects.length > 0" class="divide-y divide-blue-200">
+              <li v-for="subject in studentSubjects" :key="subject.id" class="py-2 flex justify-between">
+                <span class="font-medium">{{ subject.name }}</span>
+                <span class="text-sm text-blue-700">
+                  {{ subject.teacher_name ? `Teacher: ${subject.teacher_name}` : 'No teacher assigned' }}
+                </span>
+              </li>
+            </ul>
+            <p v-else class="text-center text-blue-700">No subjects assigned yet.</p>
+          </div>
+        </div>
+      </div>
+
       <h3 class="text-lg font-semibold text-gray-700 text-center">Student Actions</h3>
       <button @click="viewResults"
         class="w-full bg-blue-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
@@ -87,14 +125,6 @@
         Logout
       </button>
     </div>
-    
-    <!-- Logout Button for All Users -->
-    <div class="space-y-4">
-      <button @click="logout" 
-        class="w-full bg-red-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200">
-        Logout
-      </button>
-    </div>
   </div>
 </section>
 </template>
@@ -111,7 +141,10 @@ export default {
       userRole: '',
       userCount: null,
       teacherSubjects: [],
-      isLoadingSubjects: false
+      isLoadingSubjects: false,
+      studentProfile: null,
+      studentSubjects: [],
+      isLoadingStudentProfile: false
     };
   },
   created() {
@@ -123,6 +156,11 @@ export default {
     // Fetch teacher's subjects if the user is a teacher
     if (this.userRole === 'teacher') {
       this.fetchTeacherSubjects();
+    }
+    
+    // Fetch student profile if the user is a student
+    if (this.userRole === 'student') {
+      this.fetchStudentProfile();
     }
   },
   methods: {
@@ -225,6 +263,70 @@ export default {
     },
     viewResults() {
       this.$router.push('/student/view-results');
+    },
+    async fetchStudentProfile() {
+      this.isLoadingStudentProfile = true;
+      
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const userId = this.getUserId();
+        
+        if (!userId) {
+          console.error('No user ID found');
+          return;
+        }
+        
+        // Get the student profile
+        const profileResponse = await axios.get(`http://127.0.0.1:8000/api/users/${userId}/profile/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        this.studentProfile = profileResponse.data;
+        console.log('Student profile:', this.studentProfile);
+        
+        // Extract subjects from the profile
+        if (this.studentProfile && this.studentProfile.subject_details) {
+          this.studentSubjects = this.studentProfile.subject_details;
+        } else if (this.studentProfile && this.studentProfile.subjects) {
+          // Fetch full subject details if only IDs are provided
+          await this.fetchStudentSubjects(this.studentProfile.subjects);
+        }
+      } catch (error) {
+        console.error('Error fetching student profile:', error);
+        this.errorMessage = 'Failed to load your profile information.';
+      } finally {
+        this.isLoadingStudentProfile = false;
+      }
+    },
+    async fetchStudentSubjects(subjectIds) {
+      if (!subjectIds || !subjectIds.length) return;
+      
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const response = await axios.get('http://127.0.0.1:8000/api/subjects/', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Filter only the subjects assigned to the student
+        this.studentSubjects = response.data.filter(subject => 
+          subjectIds.includes(subject.id)
+        );
+      } catch (error) {
+        console.error('Error fetching student subjects:', error);
+      }
+    },
+    getUserId() {
+      // Try to get user ID from stored user object
+      const userStr = localStorage.getItem('user') || sessionStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          return user.id;
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+        }
+      }
+      return null;
     },
   }
 };

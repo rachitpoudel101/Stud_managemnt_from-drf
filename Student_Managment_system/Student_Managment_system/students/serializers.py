@@ -18,10 +18,11 @@ class SubjectSerializer(serializers.ModelSerializer):
 class StudentProfileSerializer(serializers.ModelSerializer):
     user_details = UserBasicSerializer(source='user', read_only=True)
     subject_details = SubjectSerializer(source='subjects', many=True, read_only=True)
+    grade_display = serializers.CharField(source='get_grade_display', read_only=True)
     
     class Meta:
         model = StudentProfile
-        fields = ['id', 'user', 'user_details', 'education_level', 'subjects', 'subject_details']
+        fields = ['id', 'user', 'user_details', 'education_level', 'grade', 'grade_display', 'subjects', 'subject_details']
         extra_kwargs = {
             'user': {'write_only': True}
         }

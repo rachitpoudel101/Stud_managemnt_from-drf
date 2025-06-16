@@ -5,7 +5,8 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
-            <ShieldIcon class="h-8 w-8 text-blue-600 mr-3" />
+            <!-- Replace ShieldIcon with a simple span or text -->
+            <span class="h-8 w-8 text-blue-600 mr-3 font-bold">🛡️</span>
             <h1 class="text-xl font-semibold text-gray-900">{{ userRole.charAt(0).toUpperCase() + userRole.slice(1) }} Dashboard</h1>
           </div>
           <div class="flex items-center space-x-4">
@@ -27,7 +28,8 @@
         <div v-if="successMessage" class="mb-6">
           <div class="rounded-md bg-green-50 p-4">
             <div class="flex">
-              <CheckCircleIcon class="h-5 w-5 text-green-400" />
+              <!-- Replace CheckCircleIcon -->
+              <span class="h-5 w-5 text-green-400">✓</span>
               <div class="ml-3">
                 <p class="text-sm font-medium text-green-800">{{ successMessage }}</p>
               </div>
@@ -38,7 +40,8 @@
         <div v-if="errorMessage" class="mb-6">
           <div class="rounded-md bg-red-50 p-4">
             <div class="flex">
-              <XCircleIcon class="h-5 w-5 text-red-400" />
+              <!-- Replace XCircleIcon -->
+              <span class="h-5 w-5 text-red-400">✕</span>
               <div class="ml-3">
                 <p class="text-sm font-medium text-red-800">{{ errorMessage }}</p>
               </div>
@@ -54,7 +57,8 @@
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0">
-                    <UsersIcon class="h-6 w-6 text-gray-400" />
+                    <!-- Replace UsersIcon -->
+                    <span class="h-6 w-6 text-gray-400">👥</span>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
@@ -72,7 +76,8 @@
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0">
-                    <GraduationCapIcon class="h-6 w-6 text-gray-400" />
+                    <!-- Replace UsersIcon -->
+                    <span class="h-6 w-6 text-gray-400">👥</span>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
@@ -90,11 +95,13 @@
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0">
-                    <UserIcon class="h-6 w-6 text-gray-400" />
+                    <!-- Replace UsersIcon -->
+                    <span class="h-6 w-6 text-gray-400">👥</span>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Total Teachers</dt>
+                      <dt class="text-sm font-medium text-gray-500 truncate">Total 
+                      </dt>
                       <dd class="text-lg font-medium text-gray-900">
                         {{ teacherCount !== null ? teacherCount : 'Loading...' }}
                       </dd>
@@ -108,7 +115,8 @@
               <div class="p-5">
                 <div class="flex items-center">
                   <div class="flex-shrink-0">
-                    <BookOpenIcon class="h-6 w-6 text-gray-400" />
+                    <!-- Replace BookOpenIcon -->
+                    <span class="h-6 w-6 text-gray-400">📚</span>
                   </div>
                   <div class="ml-5 w-0 flex-1">
                     <dl>
@@ -136,21 +144,18 @@
                   @click="addStudents"
                   class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 >
-                  <UserPlusIcon class="h-4 w-4 mr-2" />
                   Add Student
                 </button>
                 <button
                   @click="addTeachers"
                   class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  <UserPlusIcon class="h-4 w-4 mr-2" />
                   Add Teacher
                 </button>
                 <button
                   @click="manageStudents"
                   class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  <SettingsIcon class="h-4 w-4 mr-2" />
                   Manage Users & Subjects
                 </button>
               </div>
@@ -167,23 +172,175 @@
                   @click="addSubject"
                   class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
-                  <PlusIcon class="h-4 w-4 mr-2" />
                   Add Subject
                 </button>
                 <button
                   @click="viewReports"
                   class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  <BarChartIcon class="h-4 w-4 mr-2" />
                   View Reports
                 </button>
                 <button
                   @click="systemSettings"
                   class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  <CogIcon class="h-4 w-4 mr-2" />
                   System Settings
                 </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admin Management Tables -->
+          <h2 class="text-xl font-bold mb-4">User & Subject Management</h2>
+          
+          <!-- User Management Table -->
+          <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Users
+              </h3>
+              <div class="flex items-center space-x-2">
+                <!-- Filter buttons -->
+                <div class="flex rounded-md shadow-sm bg-gray-100 mr-3" role="group">
+                  <button 
+                    @click="filterUsers('all')" 
+                    class="px-3 py-1 text-sm font-medium rounded-l-md" 
+                    :class="userFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                  >
+                    All
+                  </button>
+                  <button 
+                    @click="filterUsers('teacher')" 
+                    class="px-3 py-1 text-sm font-medium" 
+                    :class="userFilter === 'teacher' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                  >
+                    Teachers
+                  </button>
+                  <button 
+                    @click="filterUsers('student')" 
+                    class="px-3 py-1 text-sm font-medium rounded-r-md" 
+                    :class="userFilter === 'student' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                  >
+                    Students
+                  </button>
+                </div>
+                <!-- Refresh button -->
+                <button @click="loadAllUsers" class="text-blue-600 hover:text-blue-800">
+                  🔄 Refresh
+                </button>
+              </div>
+            </div>
+            <div class="p-4">
+              <div v-if="isLoadingUsers" class="text-center py-4">
+                <p>Loading users...</p>
+              </div>
+              <div v-else-if="filteredUsers.length === 0" class="text-center py-4">
+                <p>No users found. Try changing the filter.</p>
+              </div>
+              <div v-else class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Username
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Role
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="user in filteredUsers" :key="user.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ user.first_name }} {{ user.last_name }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">{{ user.username }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">{{ user.email }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
+                              :class="user.role === 'teacher' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                          {{ user.role.charAt(0).toUpperCase() + user.role.slice(1) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button @click="showEditUser(user)" class="text-blue-600 hover:text-blue-900 mr-3">
+                          Edit
+                        </button>
+                        <button @click="confirmDeleteUser(user)" class="text-red-600 hover:text-red-900">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Subject Management Table -->
+          <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
+              <h3 class="text-lg leading-6 font-medium text-gray-900">
+                Subjects
+              </h3>
+              <button @click="loadSubjects" class="text-blue-600 hover:text-blue-800">
+                🔄 Refresh
+              </button>
+            </div>
+            <div class="p-4">
+              <div v-if="isLoadingSubjects" class="text-center py-4">
+                <p>Loading subjects...</p>
+              </div>
+              <div v-else-if="subjects.length === 0" class="text-center py-4">
+                <p>No subjects found.</p>
+              </div>
+              <div v-else class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Subject Name
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Assigned Teacher
+                      </th>
+                      <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="subject in subjects" :key="subject.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ subject.name }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-500">{{ subject.teacher_name || 'No teacher assigned' }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button @click="showEditSubject(subject)" class="text-blue-600 hover:text-blue-900 mr-3">
+                          Edit
+                        </button>
+                        <button @click="confirmDeleteSubject(subject)" class="text-red-600 hover:text-red-900">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -225,14 +382,12 @@
                 @click="manageStudents"
                 class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <SettingsIcon class="h-4 w-4 mr-2" />
                 Manage Students & Subjects
               </button>
               <button
                 @click="manageMarks"
                 class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
-                <PencilIcon class="h-4 w-4 mr-2" />
                 Manage Student Marks
               </button>
             </div>
@@ -292,7 +447,6 @@
                 @click="viewResults"
                 class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                <DocumentReportIcon class="h-4 w-4 mr-2" />
                 View My Results
               </button>
             </div>
@@ -300,6 +454,120 @@
         </div>
       </div>
     </main>
+    
+    <!-- Edit User Modal -->
+    <div v-if="showEditUserModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Username</h3>
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            v-model="editUserUsername" 
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button 
+            @click="closeEditUserModal" 
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="updateUser" 
+            :disabled="isUpdating"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {{ isUpdating ? 'Updating...' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Delete User Modal -->
+    <div v-if="showDeleteUserModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Delete User</h3>
+        <p class="text-gray-700 mb-4">
+          Are you sure you want to delete {{ userToDelete?.first_name }} {{ userToDelete?.last_name }} ({{ userToDelete?.username }})?
+          This action cannot be undone.
+        </p>
+        <div class="flex justify-end space-x-3">
+          <button 
+            @click="closeDeleteUserModal" 
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="deleteUser" 
+            :disabled="isDeleting"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+          >
+            {{ isDeleting ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Edit Subject Modal -->
+    <div v-if="showEditSubjectModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Subject</h3>
+        <div class="mb-4">
+          <label for="subject-name" class="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
+          <input 
+            type="text" 
+            id="subject-name" 
+            v-model="editSubjectName" 
+            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button 
+            @click="closeEditSubjectModal" 
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="updateSubject" 
+            :disabled="isUpdating"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {{ isUpdating ? 'Updating...' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Delete Subject Modal -->
+    <div v-if="showDeleteSubjectModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Delete Subject</h3>
+        <p class="text-gray-700 mb-4">
+          Are you sure you want to delete the subject "{{ subjectToDelete?.name }}"?
+          This action cannot be undone.
+        </p>
+        <div class="flex justify-end space-x-3">
+          <button 
+            @click="closeDeleteSubjectModal" 
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="deleteSubject" 
+            :disabled="isDeleting"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
+          >
+            {{ isDeleting ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -315,14 +583,41 @@ export default {
       errorMessage: "",
       userRole: "",
       userCount: null,
-      teacherCount: null,  // Add teacher count
-      studentCount: null,  // Add student count
-      subjectCount: null,  // Add subject count
+      teacherCount: null,
+      studentCount: null,
+      subjectCount: null,
       teacherSubjects: [],
       isLoadingSubjects: false,
       studentProfile: null,
       studentSubjects: [],
       isLoadingStudentProfile: false,
+      
+      // Replace separate teachers and students arrays with a unified users array
+      users: [],
+      filteredUsers: [],
+      userFilter: 'all', // 'all', 'teacher', 'student'
+      isLoadingUsers: false,
+      
+      // Keep other properties
+      subjects: [],
+      isLoadingSubjects: false,
+      
+      // Edit user modal
+      showEditUserModal: false,
+      editingUser: null,
+      editUserUsername: '',
+      // Delete user modal
+      showDeleteUserModal: false,
+      userToDelete: null,
+      // Edit subject modal
+      showEditSubjectModal: false,
+      editingSubject: null,
+      editSubjectName: '',
+      // Delete subject modal
+      showDeleteSubjectModal: false,
+      subjectToDelete: null,
+      isUpdating: false,
+      isDeleting: false
     };
   },
   created() {
@@ -346,6 +641,12 @@ export default {
     // Fetch student profile if the user is a student
     if (this.userRole === "student") {
       this.fetchStudentProfile();
+    }
+    
+    // If admin, load all users and subjects for management
+    if (this.userRole === 'admin') {
+      this.loadAllUsers(); // New unified method instead of separate teacher/student loads
+      this.loadSubjects();
     }
   },
   methods: {
@@ -582,12 +883,248 @@ export default {
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
-          return user.id;
+          return user.id || null;
         } catch (e) {
           console.error("Error parsing user data:", e);
         }
       }
       return null;
+    },
+    
+    // New methods for admin management of users and subjects
+    viewReports() {
+      console.log("View reports clicked - functionality to be implemented");
+    },
+    
+    systemSettings() {
+      console.log("System settings clicked - functionality to be implemented");
+    },
+    
+    // Teacher management methods
+    async loadAllUsers() {
+      this.isLoadingUsers = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const response = await axios.get("http://127.0.0.1:8000/api/users/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        this.users = response.data;
+        this.filterUsers(this.userFilter); // Apply current filter
+      } catch (error) {
+        console.error("Error loading users:", error);
+        this.errorMessage = "Failed to load users.";
+      } finally {
+        this.isLoadingUsers = false;
+      }
+    },
+    
+    filterUsers(filter) {
+      this.userFilter = filter;
+      
+      if (filter === 'all') {
+        this.filteredUsers = this.users;
+      } else {
+        this.filteredUsers = this.users.filter(user => user.role === filter);
+      }
+    },
+    
+    // Subject management methods
+    async loadSubjects() {
+      this.isLoadingSubjects = true;
+      this.errorMessage = '';
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const response = await axios.get("http://127.0.0.1:8000/api/subjects/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        this.subjects = response.data;
+      } catch (error) {
+        console.error("Error loading subjects:", error);
+        this.errorMessage = "Failed to load subjects.";
+      } finally {
+        this.isLoadingSubjects = false;
+      }
+    },
+    
+    // Edit user methods
+    showEditUser(user) {
+      this.editingUser = { ...user };
+      this.editUserUsername = user.username;
+      this.showEditUserModal = true;
+    },
+    
+    closeEditUserModal() {
+      this.showEditUserModal = false;
+      this.editingUser = null;
+      this.editUserUsername = '';
+    },
+    
+    async updateUser() {
+      if (!this.editingUser || !this.editUserUsername.trim()) {
+        return;
+      }
+      
+      this.isUpdating = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        await axios.patch(
+          `http://127.0.0.1:8000/api/users/${this.editingUser.id}/change-username/`,
+          { username: this.editUserUsername.trim() },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Update local data
+        const userIndex = this.users.findIndex(u => u.id === this.editingUser.id);
+        if (userIndex !== -1) {
+          this.users[userIndex].username = this.editUserUsername.trim();
+          this.filterUsers(this.userFilter); // Re-apply the current filter
+        }
+        
+        this.successMessage = 'Username updated successfully!';
+        this.closeEditUserModal();
+      } catch (error) {
+        console.error("Error updating username:", error);
+        this.errorMessage = error.response?.data?.error || 'Failed to update username.';
+      } finally {
+        this.isUpdating = false;
+      }
+    },
+    
+    // Delete user methods
+    confirmDeleteUser(user) {
+      this.userToDelete = user;
+      this.showDeleteUserModal = true;
+    },
+    
+    closeDeleteUserModal() {
+      this.showDeleteUserModal = false;
+      this.userToDelete = null;
+    },
+    
+    async deleteUser() {
+      if (!this.userToDelete) {
+        return;
+      }
+      
+      this.isDeleting = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        await axios.delete(
+          `http://127.0.0.1:8000/api/users/${this.userToDelete.id}/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Update local data
+        this.users = this.users.filter(u => u.id !== this.userToDelete.id);
+        this.filterUsers(this.userFilter); // Re-apply the current filter
+        
+        // Update counts
+        if (this.userToDelete.role === 'teacher') {
+          this.teacherCount = Math.max(0, this.teacherCount - 1);
+        } else if (this.userToDelete.role === 'student') {
+          this.studentCount = Math.max(0, this.studentCount - 1);
+        }
+        this.userCount = Math.max(0, this.userCount - 1);
+        
+        this.successMessage = `User ${this.userToDelete.username} deleted successfully!`;
+        this.closeDeleteUserModal();
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        this.errorMessage = error.response?.data?.error || 'Failed to delete user.';
+      } finally {
+        this.isDeleting = false;
+      }
+    },
+    
+    // Edit subject methods
+    showEditSubject(subject) {
+      this.editingSubject = { ...subject };
+      this.editSubjectName = subject.name;
+      this.showEditSubjectModal = true;
+    },
+    
+    closeEditSubjectModal() {
+      this.showEditSubjectModal = false;
+      this.editingSubject = null;
+      this.editSubjectName = '';
+    },
+    
+    async updateSubject() {
+      if (!this.editingSubject || !this.editSubjectName.trim()) {
+        return;
+      }
+      
+      this.isUpdating = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        await axios.patch(
+          `http://127.0.0.1:8000/api/subjects/${this.editingSubject.id}/`,
+          { name: this.editSubjectName.trim() },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Update local data
+        const subjectIndex = this.subjects.findIndex(s => s.id === this.editingSubject.id);
+        if (subjectIndex !== -1) {
+          this.subjects[subjectIndex].name = this.editSubjectName.trim();
+        }
+        
+        this.closeEditSubjectModal();
+      } catch (error) {
+        console.error("Error updating subject:", error);
+        this.errorMessage = error.response?.data?.error || 'Failed to update subject.';
+      } finally {
+        this.isUpdating = false;
+      }
+    },
+    
+    // Delete subject methods
+    confirmDeleteSubject(subject) {
+      this.subjectToDelete = subject;
+      this.showDeleteSubjectModal = true;
+    },
+    
+    closeDeleteSubjectModal() {
+      this.showDeleteSubjectModal = false;
+      this.subjectToDelete = null;
+    },
+    
+    async deleteSubject() {
+      if (!this.subjectToDelete) {
+        return;
+      }
+      
+      this.isDeleting = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        await axios.delete(
+          `http://127.0.0.1:8000/api/subjects/${this.subjectToDelete.id}/`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Update local data
+        this.subjects = this.subjects.filter(s => s.id !== this.subjectToDelete.id);
+        
+        this.successMessage = `Subject "${this.subjectToDelete.name}" deleted successfully!`;
+        this.closeDeleteSubjectModal();
+      } catch (error) {
+        console.error("Error deleting subject:", error);
+        this.errorMessage = error.response?.data?.error || 'Failed to delete subject.';
+      } finally {
+        this.isDeleting = false;
+      }
     },
   },
 };

@@ -12,12 +12,6 @@
         {{ errorMessage }}
       </div>
       
-      <!-- Debug Info (Development only) -->
-      <div v-if="debug" class="mb-4 p-3 bg-gray-100 border border-gray-300 text-gray-700 rounded text-xs">
-        <h4 class="font-bold mb-1">Debug Info:</h4>
-        <pre>{{ debugInfo }}</pre>
-      </div>
-      
       <!-- Subject Selection -->
       <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">Select Subject</label>
@@ -50,6 +44,9 @@
                   Student
                 </th>
                 <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Grade
+                </th>
+                <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Marks
                 </th>
                 <th class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -61,6 +58,9 @@
               <tr v-for="student in students" :key="student.id">
                 <td class="py-2 px-4 border-b border-gray-200">
                   {{ student.first_name }} {{ student.last_name }}
+                </td>
+                <td class="py-2 px-4 border-b border-gray-200">
+                  {{ student.grade_display || `Grade ${student.grade}` || 'N/A' }}
                 </td>
                 <td class="py-2 px-4 border-b border-gray-200">
                   <input 
@@ -134,9 +134,7 @@ export default {
       isSaving: false,
       isPublishing: false,
       successMessage: '',
-      errorMessage: '',
-      debug: process.env.NODE_ENV !== 'production', // Only enable in development
-      debugInfo: ''
+      errorMessage: ''
     };
   },
   mounted() {
@@ -154,9 +152,6 @@ export default {
         });
         
         this.subjects = response.data;
-        if (this.debug) {
-          this.debugInfo = `Fetched ${this.subjects.length} subjects`;
-        }
       } catch (error) {
         console.error('Error fetching subjects:', error);
         this.errorMessage = 'Failed to load subjects. Please try again.';
@@ -168,94 +163,48 @@ export default {
     async loadStudents() {
       if (!this.selectedSubject) return;
       
-      this.students = [];
+      this.isLoadingStudents = true;
       this.marksData = {};
       this.studentMarkStatus = {};
-      this.isLoadingStudents = true;
       this.errorMessage = '';
-      this.debugInfo = '';
       
       try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         
-        // Get the selected subject
-        const subject = this.subjects.find(s => s.id === this.selectedSubject);
-        if (!subject) {
-          throw new Error('Subject not found');
-        }
-        
-        if (this.debug) {
-          this.debugInfo += `Selected subject: ${subject.name} (ID: ${subject.id})\n`;
-        }
-        
-        // Fetch student profiles that have this subject
-        const profilesResponse = await axios.get(`http://127.0.0.1:8000/api/student-profiles/?subject=${this.selectedSubject}`, {
+        // Get all students assigned to this subject
+        const profilesResponse = await axios.get(`http://127.0.0.1:8000/api/student-profiles/`, {
+          params: { subject: this.selectedSubject },
           headers: { Authorization: `Bearer ${token}` }
         });
         
         const studentProfiles = profilesResponse.data;
+        this.students = studentProfiles.map(profile => ({
+          id: profile.id,
+          first_name: profile.user_details?.first_name || 'Unknown',
+          last_name: profile.user_details?.last_name || '',
+          grade: profile.grade,
+          grade_display: profile.grade_display
+        }));
         
-        if (this.debug) {
-          this.debugInfo += `Fetched ${studentProfiles.length} student profiles\n`;
-          if (studentProfiles.length > 0) {
-            this.debugInfo += `Sample profile: ${JSON.stringify(studentProfiles[0])}\n`;
-          }
+        // Fetch existing marks
+        const marksResponse = await axios.get(`http://127.0.0.1:8000/api/marks/`, {
+          params: { subject: this.selectedSubject },
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        // Add existing marks
+        for (const mark of marksResponse.data) {
+          const studentId = mark.student;
+          this.marksData[studentId] = mark.marks;
+          this.studentMarkStatus[studentId] = {
+            published: mark.published || false,
+            mark_id: mark.id
+          };
         }
         
-        // Process student profiles
-        for (const profile of studentProfiles) {
-          if (profile.user_details) {
-            const user = profile.user_details;
-            const student = {
-              id: profile.id,
-              userId: user.id,
-              username: user.username,
-              first_name: user.first_name || 'No name',
-              last_name: user.last_name || '',
-              email: user.email || ''
-            };
-            this.students.push(student);
-          } else {
-            console.warn('Student profile without user details:', profile);
-          }
-        }
-        
-        if (this.debug) {
-          this.debugInfo += `Processed ${this.students.length} students\n`;
-        }
-        
-        // Fetch existing marks for this subject
-        if (this.students.length > 0) {
-          const marksResponse = await axios.get(`http://127.0.0.1:8000/api/marks/?subject=${this.selectedSubject}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          
-          const marks = marksResponse.data;
-          
-          if (this.debug) {
-            this.debugInfo += `Fetched ${marks.length} marks records\n`;
-          }
-          
-          // Add existing marks
-          for (const mark of marks) {
-            const studentId = mark.student;
-            this.marksData[studentId] = mark.marks;
-            this.studentMarkStatus[studentId] = {
-              published: mark.published || false,
-              mark_id: mark.id
-            };
-          }
-        }
       } catch (error) {
         console.error('Error loading students:', error);
         this.errorMessage = 'Failed to load students. Please try again.';
-        
-        if (this.debug && error.response) {
-          this.debugInfo += `Error response: ${JSON.stringify(error.response.data)}\n`;
-          this.debugInfo += `Status: ${error.response.status}\n`;
-        } else if (this.debug) {
-          this.debugInfo += `Error: ${error.message}\n`;
-        }
       } finally {
         this.isLoadingStudents = false;
       }

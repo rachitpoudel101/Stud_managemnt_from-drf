@@ -1,8 +1,8 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import StudentProfile, Marks, Subject
-from .serializers import StudentProfileSerializer, MarksSerializer, SubjectSerializer
+from .models import StudentProfile, Marks, Subject, notice
+from .serializers import NoticeSerializer, StudentProfileSerializer, MarksSerializer, SubjectSerializer
 from users.permissions import IsTeacher, IsAdmin, IsTeacherOrAdmin
 
 class SubjectViewSet(viewsets.ModelViewSet):
@@ -336,3 +336,33 @@ class MarksViewSet(viewsets.ModelViewSet):
             "updated": updated_count,
             "errors": errors
         })
+
+class NoticeViewSet(viewsets.ModelViewSet):
+    queryset = notice.objects.all()
+    serializer_class = NoticeSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsTeacherOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'student':
+            return notice.objects.filter(audience__in=['student', 'both'], published=True)
+        elif user.role == 'teacher':
+            return notice.objects.filter(audience__in=['teacher', 'both'], published=True)
+        # Admin can see all notices
+        return notice.objects.all()
+    def perform_create(self, serializer):
+        user = self.request.user
+        audience = serializer.validated_data.get('audience')
+        
+        # Admin can choose anyone as audience
+        if user.role == 'admin':
+            serializer.save(created_by=user)
+        # Teacher can only choose student as audience
+        elif user.role == 'teacher':
+            if audience != 'student':
+                raise serializers.ValidationError("Teachers can only create notices for students.")
+            serializer.save(created_by=user)

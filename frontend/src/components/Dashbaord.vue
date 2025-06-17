@@ -177,6 +177,22 @@
             </div>
           </div>
 
+          <!-- Notices Section for Admin -->
+          <div class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CreateNotice 
+                :userRole="userRole" 
+                @notice-created="loadNotices"
+              />
+              <NoticeList 
+                :userRole="userRole" 
+                ref="noticeList"
+                @edit-notice="prepareEditNotice"
+              />
+            </div>
+          </div>
+
           <!-- Admin Management Tables -->
           <h2 class="text-xl font-bold mb-4">User & Subject Management</h2>
           
@@ -408,6 +424,22 @@
               </button>
             </div>
           </div>
+          
+          <!-- Notices Section for Teacher -->
+          <div class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <CreateNotice 
+                :userRole="userRole" 
+                @notice-created="loadNotices"
+              />
+              <NoticeList 
+                :userRole="userRole" 
+                ref="noticeList"
+                @edit-notice="prepareEditNotice"
+              />
+            </div>
+          </div>
         </div>
         
         <!-- Student Dashboard -->
@@ -466,6 +498,15 @@
                 View My Results
               </button>
             </div>
+          </div>
+          
+          <!-- Notices Section for Student - View Only -->
+          <div class="mt-8">
+            <h2 class="text-xl font-bold mb-4">Notice Board</h2>
+            <NoticeList 
+              :userRole="userRole" 
+              ref="noticeList"
+            />
           </div>
         </div>
       </div>
@@ -588,11 +629,16 @@
 </template>
 
 <script>
-
 import axios from "axios";
+import CreateNotice from "./CreateNotice.vue";
+import NoticeList from "./NoticeList.vue";
 
 export default {
   name: "Dashboard",
+  components: {
+    CreateNotice,
+    NoticeList
+  },
   data() {
     return {
       successMessage: "",
@@ -634,6 +680,9 @@ export default {
       isUpdating: false,
       isDeleting: false,
       deletedUsers: [],
+      
+      // For notice management
+      editingNotice: null,
     };
   },
   created() {
@@ -1214,6 +1263,21 @@ export default {
         this.isLoadingSubjects = false;
       }
     },
+    
+    // Notice related methods
+    loadNotices() {
+      if (this.$refs.noticeList) {
+        this.$refs.noticeList.loadNotices();
+      }
+    },
+    
+    prepareEditNotice(notice) {
+      this.editingNotice = notice;
+      // Logic for editing a notice could be implemented here
+      // or as a separate modal component
+      console.log('Edit notice:', notice);
+      alert('Notice editing will be implemented in a future update.');
+    }
   }
 };
 </script>

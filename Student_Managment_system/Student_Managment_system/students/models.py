@@ -1,5 +1,6 @@
 # Import User model
 from django.db import models
+from django.conf import settings
 from users.models import User
 
 class Subject(models.Model):
@@ -54,3 +55,24 @@ class Marks(models.Model):
 
     def __str__(self):
         return f"{self.student.user.username} - {self.subject.name} - {self.marks}"
+
+class notice(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    published = models.BooleanField(default=True)
+
+    FOR_CHOICES = (
+        ('student', 'Student'),
+        ('teacher', 'Teacher'),
+        ('both', 'Both'),
+    )
+    audience = models.CharField(max_length=10, choices=FOR_CHOICES)
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = 'Notices'
+        ordering = ['-created_at']  # Newest notices first

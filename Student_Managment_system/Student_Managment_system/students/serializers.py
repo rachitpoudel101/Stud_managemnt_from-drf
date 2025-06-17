@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import StudentProfile, Marks, Subject
+from .models import StudentProfile, Marks, Subject, notice
 from users.models import User
 
 class UserBasicSerializer(serializers.ModelSerializer):
@@ -37,4 +37,17 @@ class MarksSerializer(serializers.ModelSerializer):
         
     def get_student_name(self, obj):
         user = obj.student.user
+        return f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username
+
+
+class NoticeSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.SerializerMethodField(read_only=True)
+    
+    class Meta:
+        model = notice
+        fields = '__all__'
+        read_only_fields = ['created_by']
+        
+    def get_created_by_name(self, obj):
+        user = obj.created_by
         return f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username

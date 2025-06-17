@@ -5,8 +5,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
-            <!-- Replace ShieldIcon with a simple span or text -->
-            <span class="h-8 w-8 text-blue-600 mr-3 font-bold">🛡️</span>
+            <span class="h-8 w-8 text-blue-600 mr-3 font-bold">🛡</span>
             <h1 class="text-xl font-semibold text-gray-900">{{ userRole.charAt(0).toUpperCase() + userRole.slice(1) }} Dashboard</h1>
           </div>
           <div class="flex items-center space-x-4">
@@ -174,18 +173,6 @@
                 >
                   Add Subject
                 </button>
-                <button
-                  @click="viewReports"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  View Reports
-                </button>
-                <button
-                  @click="systemSettings"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  System Settings
-                </button>
               </div>
             </div>
           </div>
@@ -218,10 +205,17 @@
                   </button>
                   <button 
                     @click="filterUsers('student')" 
-                    class="px-3 py-1 text-sm font-medium rounded-r-md" 
+                    class="px-3 py-1 text-sm font-medium" 
                     :class="userFilter === 'student' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
                   >
                     Students
+                  </button>
+                  <button 
+                    @click="filterUsers('deleted')" 
+                    class="px-3 py-1 text-sm font-medium rounded-r-md" 
+                    :class="userFilter === 'deleted' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                  >
+                    Deleted
                   </button>
                 </div>
                 <!-- Refresh button -->
@@ -276,12 +270,17 @@
                         </span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button @click="showEditUser(user)" class="text-blue-600 hover:text-blue-900 mr-3">
-                          Edit
+                        <button v-if="userFilter === 'deleted'" @click="restoreUser(user)" class="text-green-600 hover:text-green-900 mr-3">
+                          Restore
                         </button>
-                        <button @click="confirmDeleteUser(user)" class="text-red-600 hover:text-red-900">
-                          Delete
-                        </button>
+                        <template v-else>
+                          <button @click="showEditUser(user)" class="text-blue-600 hover:text-blue-900 mr-3">
+                            Edit
+                          </button>
+                          <button @click="confirmDeleteUser(user)" class="text-red-600 hover:text-red-900">
+                            Delete
+                          </button>
+                        </template>
                       </td>
                     </tr>
                   </tbody>
@@ -617,7 +616,6 @@ export default {
       
       // Keep other properties
       subjects: [],
-      isLoadingSubjects: false,
       
       // Edit user modal
       showEditUserModal: false,
@@ -634,7 +632,8 @@ export default {
       showDeleteSubjectModal: false,
       subjectToDelete: null,
       isUpdating: false,
-      isDeleting: false
+      isDeleting: false,
+      deletedUsers: [],
     };
   },
   created() {
@@ -938,32 +937,64 @@ export default {
       }
     },
     
-    filterUsers(filter) {
+    // Updated method to handle deleted users filter
+    async filterUsers(filter) {
       this.userFilter = filter;
       
-      if (filter === 'all') {
+      if (filter === 'deleted') {
+        await this.loadDeletedUsers();
+        this.filteredUsers = this.deletedUsers;
+      } else if (filter === 'all') {
         this.filteredUsers = this.users;
       } else {
         this.filteredUsers = this.users.filter(user => user.role === filter);
       }
     },
     
-    // Subject management methods
-    async loadSubjects() {
-      this.isLoadingSubjects = true;
+    // New method to load deleted users
+    async loadDeletedUsers() {
+      this.isLoadingUsers = true;
       this.errorMessage = '';
+      
       try {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        const response = await axios.get("http://127.0.0.1:8000/api/subjects/", {
+        const response = await axios.get("http://127.0.0.1:8000/api/users/deleted/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        this.subjects = response.data;
+        this.deletedUsers = response.data;
       } catch (error) {
-        console.error("Error loading subjects:", error);
-        this.errorMessage = "Failed to load subjects.";
+        console.error("Error loading deleted users:", error);
+        this.errorMessage = "Failed to load deleted users.";
+        this.deletedUsers = [];
       } finally {
-        this.isLoadingSubjects = false;
+        this.isLoadingUsers = false;
+      }
+    },
+    
+    // New method to restore a user
+    async restoreUser(user) {
+      try {
+        this.errorMessage = '';
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        
+        await axios.post(
+          `http://127.0.0.1:8000/api/users/${user.id}/restore/`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        // Remove from deleted users list
+        this.deletedUsers = this.deletedUsers.filter(u => u.id !== user.id);
+        this.filteredUsers = this.deletedUsers;
+        
+        // Refresh active users
+        await this.loadAllUsers();
+        
+        this.successMessage = `User ${user.username} has been restored.`;
+      } catch (error) {
+        console.error("Error restoring user:", error);
+        this.errorMessage = error.response?.data?.error || "Failed to restore user.";
       }
     },
     
@@ -1060,7 +1091,6 @@ export default {
         this.isDeleting = false;
       }
     },
-    
     // Edit subject methods
     showEditSubject(subject) {
       this.editingSubject = { ...subject };
@@ -1164,7 +1194,26 @@ export default {
         path: "/student/view-results",
         query: { viewAsAdmin: this.userRole === 'admin' ? 'true' : 'false' }
       });
-    }
+    },
+    
+    // Method to load subjects - added missing method
+    async loadSubjects() {
+      this.isLoadingSubjects = true;
+      this.errorMessage = '';
+      try {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const response = await axios.get("http://127.0.0.1:8000/api/subjects/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        this.subjects = response.data;
+      } catch (error) {
+        console.error("Error loading subjects:", error);
+        this.errorMessage = "Failed to load subjects.";
+      } finally {
+        this.isLoadingSubjects = false;
+      }
+    },
   }
 };
 </script>

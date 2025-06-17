@@ -24,7 +24,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'destroy':
             # Allow delete only if admin or teacher
             return [permissions.IsAuthenticated()]
-        if self.action in ['update', 'partial_update', 'retrieve', 'list', 'change_username']:
+        if self.action in ['update', 'partial_update', 'retrieve', 'list', 'change_username', 'restore_user', 'deleted_users']:
             return [permissions.IsAuthenticated()]
         return super().get_permissions()
 
@@ -32,13 +32,17 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if not user.is_authenticated:
             return User.objects.none()
+            
+        # By default, only show active users
+        queryset = User.objects.filter(is_active=True)
+            
         if user.role == 'admin':
-            return User.objects.all()
+            return queryset
         if user.role == 'teacher':
             # Teachers can see only student users
-            return User.objects.filter(role='student')
+            return queryset.filter(role='student')
         # Students can only see themselves
-        return User.objects.filter(id=user.id)
+        return queryset.filter(id=user.id)
         
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -113,19 +117,68 @@ class UserViewSet(viewsets.ModelViewSet):
         requesting_user = request.user
         target_user = self.get_object()
 
+        # Check permissions
         if requesting_user.role == 'admin':
-            return super().destroy(request, *args, **kwargs)
-
-        if requesting_user.role == 'teacher':
+            # Admin can delete any user
+            pass
+        elif requesting_user.role == 'teacher':
             if target_user.role != 'student':
                 raise PermissionDenied("Teachers can only delete student users.")
-            return super().destroy(request, *args, **kwargs)
-
-        raise PermissionDenied("You do not have permission to delete users.")
+        else:
+            raise PermissionDenied("You do not have permission to delete users.")
+            
+        # Perform soft delete by setting is_active=False
+        target_user.is_active = False
+        target_user.save()
+        
+        return Response(
+            {"message": f"User {target_user.username} has been successfully deactivated."},
+            status=status.HTTP_200_OK
+        )
+        
+    @action(detail=True, methods=['post'], url_path='restore')
+    def restore_user(self, request, pk=None):
+        """Restore a soft-deleted user"""
+        # Only admins can restore users
+        if request.user.role != 'admin':
+            raise PermissionDenied("Only administrators can restore users.")
+            
+        try:
+            # Get the user including inactive ones
+            user_to_restore = User.objects.get(pk=pk)
+            
+            if user_to_restore.is_active:
+                return Response(
+                    {"message": "This user is already active."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            user_to_restore.is_active = True
+            user_to_restore.save()
+            
+            return Response(
+                {"message": f"User {user_to_restore.username} has been successfully restored."},
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                {"error": "User not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+            
+    @action(detail=False, methods=['get'], url_path='deleted')
+    def deleted_users(self, request):
+        """Get a list of soft-deleted users (admin only)"""
+        if request.user.role != 'admin':
+            raise PermissionDenied("Only administrators can view deleted users.")
+            
+        deleted_users = User.objects.filter(is_active=False)
+        serializer = self.get_serializer(deleted_users, many=True)
+        
+        return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='profile')
     def get_profile(self, request, pk=None):
-        """Get the student profile for a user"""
         user = self.get_object()
         
         # Check permissions

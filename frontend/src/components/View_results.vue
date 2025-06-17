@@ -127,7 +127,7 @@ export default {
       try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const response = await axios.get('http://127.0.0.1:8000/api/users/', {
-          params: { role: 'student' }, // Ensure we only fetch students
+          params: { role: 'student' }, 
           headers: { Authorization: `Bearer ${token}` }
         });
         

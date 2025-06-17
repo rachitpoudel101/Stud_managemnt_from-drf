@@ -320,3 +320,11 @@ INFO 2025-06-17 06:14:54,776 basehttp "POST /api/token/ HTTP/1.1" 200 607
 INFO 2025-06-17 06:14:54,808 basehttp "GET /api/notices/ HTTP/1.1" 200 478
 INFO 2025-06-17 06:14:54,811 basehttp "GET /api/users/2/profile/ HTTP/1.1" 200 285
 INFO 2025-06-17 06:15:01,587 basehttp "GET /api/notices/ HTTP/1.1" 200 478
+INFO 2025-06-17 06:33:04,637 basehttp "POST /api/token/ HTTP/1.1" 200 608
+INFO 2025-06-17 06:33:04,676 basehttp "GET /api/subjects/ HTTP/1.1" 200 104
+INFO 2025-06-17 06:33:04,679 basehttp "GET /api/users/ HTTP/1.1" 200 350
+INFO 2025-06-17 06:33:04,684 basehttp "GET /api/users/?role=teacher HTTP/1.1" 200 350
+INFO 2025-06-17 06:33:04,687 basehttp "GET /api/users/ HTTP/1.1" 200 350
+INFO 2025-06-17 06:33:04,689 basehttp "GET /api/users/?role=student HTTP/1.1" 200 350
+INFO 2025-06-17 06:33:04,692 basehttp "GET /api/subjects/ HTTP/1.1" 200 104
+INFO 2025-06-17 06:33:04,696 basehttp "GET /api/notices/ HTTP/1.1" 200 478

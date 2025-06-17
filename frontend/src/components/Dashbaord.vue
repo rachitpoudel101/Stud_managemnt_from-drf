@@ -27,7 +27,6 @@
         <div v-if="successMessage" class="mb-6">
           <div class="rounded-md bg-green-50 p-4">
             <div class="flex">
-              <!-- Replace CheckCircleIcon -->
               <span class="h-5 w-5 text-green-400">✓</span>
               <div class="ml-3">
                 <p class="text-sm font-medium text-green-800">{{ successMessage }}</p>
@@ -39,7 +38,6 @@
         <div v-if="errorMessage" class="mb-6">
           <div class="rounded-md bg-red-50 p-4">
             <div class="flex">
-              <!-- Replace XCircleIcon -->
               <span class="h-5 w-5 text-red-400">✕</span>
               <div class="ml-3">
                 <p class="text-sm font-medium text-red-800">{{ errorMessage }}</p>
@@ -49,466 +47,84 @@
         </div>
 
         <!-- Admin Dashboard -->
-        <div v-if="userRole === 'admin'">
-          <!-- Stats Grid -->
-          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-              <div class="p-5">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <!-- Replace UsersIcon -->
-                    <span class="h-6 w-6 text-gray-400">👥</span>
-                  </div>
-                  <div class="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
-                      <dd class="text-lg font-medium text-gray-900">
-                        {{ userCount !== null ? userCount : 'Loading...' }}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-              <div class="p-5">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <!-- Replace UsersIcon -->
-                    <span class="h-6 w-6 text-gray-400">👥</span>
-                  </div>
-                  <div class="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Total Students</dt>
-                      <dd class="text-lg font-medium text-gray-900">
-                        {{ studentCount !== null ? studentCount : 'Loading...' }}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-              <div class="p-5">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <!-- Replace UsersIcon -->
-                    <span class="h-6 w-6 text-gray-400">👥</span>
-                  </div>
-                  <div class="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Total 
-                      </dt>
-                      <dd class="text-lg font-medium text-gray-900">
-                        {{ teacherCount !== null ? teacherCount : 'Loading...' }}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-              <div class="p-5">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <!-- Replace BookOpenIcon -->
-                    <span class="h-6 w-6 text-gray-400">📚</span>
-                  </div>
-                  <div class="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt class="text-sm font-medium text-gray-500 truncate">Total Subjects</dt>
-                      <dd class="text-lg font-medium text-gray-900">
-                        {{ subjectCount !== null ? subjectCount : 'Loading...' }}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Actions Grid -->
-          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-8">
-            <!-- User Management -->
-            <div class="bg-white shadow rounded-lg">
-              <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">User Management</h3>
-                <p class="mt-1 text-sm text-gray-500">Manage students and teachers</p>
-              </div>
-              <div class="px-6 py-4 space-y-3">
-                <button
-                  @click="addStudents"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                  Add Student
-                </button>
-                <button
-                  @click="addTeachers"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Add Teacher
-                </button>
-                <button
-                  @click="manageStudents"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Manage Users & Subjects
-                </button>
-              </div>
-            </div>
-
-            <!-- Academic Management -->
-            <div class="bg-white shadow rounded-lg">
-              <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Academic Management</h3>
-                <p class="mt-1 text-sm text-gray-500">Manage subjects and curriculum</p>
-              </div>
-              <div class="px-6 py-4 space-y-3">
-                <button
-                  @click="addSubject"
-                  class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
-                  Add Subject
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notices Section for Admin -->
-          <div class="mt-8">
-            <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CreateNotice 
-                :userRole="userRole" 
-                @notice-created="loadNotices"
-              />
-              <NoticeList 
-                :userRole="userRole" 
-                ref="noticeList"
-                @edit-notice="prepareEditNotice"
-              />
-            </div>
-          </div>
-
-          <!-- Admin Management Tables -->
-          <h2 class="text-xl font-bold mb-4">User & Subject Management</h2>
-          
-          <!-- User Management Table -->
-          <div class="bg-white shadow rounded-lg mb-6">
-            <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Users
-              </h3>
-              <div class="flex items-center space-x-2">
-                <!-- Filter buttons -->
-                <div class="flex rounded-md shadow-sm bg-gray-100 mr-3" role="group">
-                  <button 
-                    @click="filterUsers('all')" 
-                    class="px-3 py-1 text-sm font-medium rounded-l-md" 
-                    :class="userFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
-                  >
-                    All
-                  </button>
-                  <button 
-                    @click="filterUsers('teacher')" 
-                    class="px-3 py-1 text-sm font-medium" 
-                    :class="userFilter === 'teacher' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
-                  >
-                    Teachers
-                  </button>
-                  <button 
-                    @click="filterUsers('student')" 
-                    class="px-3 py-1 text-sm font-medium" 
-                    :class="userFilter === 'student' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
-                  >
-                    Students
-                  </button>
-                  <button 
-                    @click="filterUsers('deleted')" 
-                    class="px-3 py-1 text-sm font-medium rounded-r-md" 
-                    :class="userFilter === 'deleted' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
-                  >
-                    Deleted
-                  </button>
-                </div>
-                <!-- Refresh button -->
-                <button @click="loadAllUsers" class="text-blue-600 hover:text-blue-800">
-                  Refresh
-                </button>
-              </div>
-            </div>
-            <div class="p-4">
-              <div v-if="isLoadingUsers" class="text-center py-4">
-                <p>Loading users...</p>
-              </div>
-              <div v-else-if="filteredUsers.length === 0" class="text-center py-4">
-                <p>No users found. Try changing the filter.</p>
-              </div>
-              <div v-else class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Username
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Role
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="user in filteredUsers" :key="user.id">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">{{ user.first_name }} {{ user.last_name }}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500">{{ user.username }}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500">{{ user.email }}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
-                              :class="user.role === 'teacher' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
-                          {{ user.role.charAt(0).toUpperCase() + user.role.slice(1) }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button v-if="userFilter === 'deleted'" @click="restoreUser(user)" class="text-green-600 hover:text-green-900 mr-3">
-                          Restore
-                        </button>
-                        <template v-else>
-                          <button @click="showEditUser(user)" class="text-blue-600 hover:text-blue-900 mr-3">
-                            Edit
-                          </button>
-                          <button @click="confirmDeleteUser(user)" class="text-red-600 hover:text-red-900">
-                            Delete
-                          </button>
-                        </template>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Subject Management Table -->
-          <div class="bg-white shadow rounded-lg mb-6">
-            <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Subjects
-              </h3>
-              <button @click="loadSubjects" class="text-blue-600 hover:text-blue-800">
-                 Refresh
-              </button>
-            </div>
-            <div class="p-4">
-              <div v-if="isLoadingSubjects" class="text-center py-4">
-                <p>Loading subjects...</p>
-              </div>
-              <div v-else-if="subjects.length === 0" class="text-center py-4">
-                <p>No subjects found.</p>
-              </div>
-              <div v-else class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Subject Name
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Assigned Teacher
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="subject in subjects" :key="subject.id">
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">{{ subject.name }}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500">{{ subject.teacher_name || 'No teacher assigned' }}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end space-x-2">
-                        <button @click="showEditSubject(subject)" class="text-blue-600 hover:text-blue-900 mr-2">
-                          Edit
-                        </button>
-                        <button @click="confirmDeleteSubject(subject)" class="text-red-600 hover:text-red-900">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <!-- All Student Results Section -->
-          <div class="bg-white shadow rounded-lg mb-6">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">
-                Student Results
-              </h3>
-            </div>
-            <div class="p-6">
-              <p class="mb-4 text-gray-600">View academic performance of all students across subjects.</p>
-              <button 
-                @click="viewAllStudentResults" 
-                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                View All Student Results
-              </button>
-            </div>
-          </div>
-        </div>
+        <AdminDashboard
+          v-if="userRole === 'admin'"
+          :user-count="userCount"
+          :teacher-count="teacherCount"
+          :student-count="studentCount"
+          :subject-count="subjectCount"
+          :filtered-users="filteredUsers"
+          :user-filter="userFilter"
+          :is-loading-users="isLoadingUsers"
+          :subjects="subjects"
+          :is-loading-subjects="isLoadingSubjects"
+          @add-students="addStudents"
+          @add-teachers="addTeachers"
+          @manage-students="manageStudents"
+          @add-subject="addSubject"
+          @filter-users="filterUsers"
+          @load-users="loadAllUsers"
+          @edit-user="showEditUser"
+          @delete-user="confirmDeleteUser"
+          @restore-user="restoreUser"
+          @load-subjects="loadSubjects"
+          @edit-subject="showEditSubject"
+          @delete-subject="confirmDeleteSubject"
+          @view-all-results="viewAllStudentResults"
+        >
+          <template v-slot:create-notice>
+            <CreateNotice 
+              :userRole="userRole" 
+              @notice-created="loadNotices"
+            />
+          </template>
+          <template v-slot:notice-list>
+            <NoticeList 
+              :userRole="userRole" 
+              ref="noticeList"
+              @edit-notice="prepareEditNotice"
+            />
+          </template>
+        </AdminDashboard>
         
         <!-- Teacher Dashboard -->
-        <div v-if="userRole === 'teacher'" class="space-y-6">
-          <!-- Teacher's Assigned Subjects -->
-          <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Your Assigned Subjects</h3>
-            </div>
-            <div class="px-6 py-4">
-              <div v-if="isLoadingSubjects" class="text-center text-gray-600">
-                <p>Loading subjects...</p>
-              </div>
-              
-              <div v-else-if="teacherSubjects.length === 0" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
-                <p class="text-yellow-700">You don't have any subjects assigned to you yet.</p>
-              </div>
-              
-              <div v-else>
-                <ul class="divide-y divide-gray-200">
-                  <li v-for="subject in teacherSubjects" :key="subject.id" class="py-4 flex justify-between">
-                    <span class="font-medium text-gray-800">{{ subject.name }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Teacher Actions -->
-          <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Teacher Actions</h3>
-            </div>
-            <div class="px-6 py-4 space-y-3">
-              <button
-                @click="manageStudents"
-                class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Manage Students & Subjects
-              </button>
-              <button
-                @click="manageMarks"
-                class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-              >
-                Manage Student Marks
-              </button>
-            </div>
-          </div>
-          
-          <!-- Notices Section for Teacher -->
-          <div class="mt-8">
-            <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CreateNotice 
-                :userRole="userRole" 
-                @notice-created="loadNotices"
-              />
-              <NoticeList 
-                :userRole="userRole" 
-                ref="noticeList"
-                @edit-notice="prepareEditNotice"
-              />
-            </div>
-          </div>
-        </div>
+        <TeacherDashboard
+          v-if="userRole === 'teacher'"
+          :teacher-subjects="teacherSubjects"
+          :is-loading-subjects="isLoadingSubjects"
+          @manage-students="manageStudents"
+          @manage-marks="manageMarks"
+        >
+          <template v-slot:create-notice>
+            <CreateNotice 
+              :userRole="userRole" 
+              @notice-created="loadNotices"
+            />
+          </template>
+          <template v-slot:notice-list>
+            <NoticeList 
+              :userRole="userRole" 
+              ref="noticeList"
+              @edit-notice="prepareEditNotice"
+            />
+          </template>
+        </TeacherDashboard>
         
         <!-- Student Dashboard -->
-        <div v-if="userRole === 'student'" class="space-y-6">
-          <!-- Student Profile Info -->
-          <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Your Information</h3>
-            </div>
-            <div class="px-6 py-4">
-              <div v-if="isLoadingStudentProfile" class="text-center text-gray-600">
-                <p>Loading profile...</p>
-              </div>
-              
-              <div v-else-if="!studentProfile" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
-                <p class="text-yellow-700">Could not load your profile information.</p>
-              </div>
-              
-              <div v-else>
-                <!-- Grade Information -->
-                <div class="mb-4 pb-3 border-b border-gray-200">
-                  <p class="font-medium">Your Grade: 
-                    <span class="text-blue-600 font-bold">
-                      {{ studentProfile.grade_display || `Grade ${studentProfile.grade}` }}
-                    </span>
-                  </p>
-                </div>
-                
-                <!-- Assigned Subjects -->
-                <div>
-                  <p class="font-medium mb-3">Your Subjects:</p>
-                  <ul v-if="studentSubjects.length > 0" class="divide-y divide-gray-200">
-                    <li v-for="subject in studentSubjects" :key="subject.id" class="py-3 flex justify-between">
-                      <span class="font-medium">{{ subject.name }}</span>
-                      <span class="text-sm text-gray-600">
-                        {{ subject.teacher_name ? `Teacher: ${subject.teacher_name}` : 'No teacher assigned' }}
-                      </span>
-                    </li>
-                  </ul>
-                  <p v-else class="text-center text-gray-600">No subjects assigned yet.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Student Actions -->
-          <div class="bg-white shadow rounded-lg">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg leading-6 font-medium text-gray-900">Student Actions</h3>
-            </div>
-            <div class="px-6 py-4">
-              <button
-                @click="viewResults"
-                class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                View My Results
-              </button>
-            </div>
-          </div>
-          
-          <!-- Notices Section for Student - View Only -->
-          <div class="mt-8">
-            <h2 class="text-xl font-bold mb-4">Notice Board</h2>
+        <StudentDashboard
+          v-if="userRole === 'student'"
+          :student-profile="studentProfile"
+          :student-subjects="studentSubjects"
+          :is-loading-student-profile="isLoadingStudentProfile"
+          @view-results="viewResults"
+        >
+          <template v-slot:notice-list>
             <NoticeList 
               :userRole="userRole" 
               ref="noticeList"
             />
-          </div>
-        </div>
+          </template>
+        </StudentDashboard>
       </div>
     </main>
     
@@ -695,12 +311,18 @@
 import axios from "axios";
 import CreateNotice from "./CreateNotice.vue";
 import NoticeList from "./NoticeList.vue";
+import AdminDashboard from "./AdminDashboard.vue";
+import TeacherDashboard from "./TeacherDashboard.vue";
+import StudentDashboard from "./StudentDashboard.vue";
 
 export default {
   name: "Dashboard",
   components: {
     CreateNotice,
-    NoticeList
+    NoticeList,
+    AdminDashboard,
+    TeacherDashboard,
+    StudentDashboard
   },
   data() {
     return {

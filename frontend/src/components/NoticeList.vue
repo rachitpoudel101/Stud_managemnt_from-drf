@@ -22,7 +22,7 @@
         <div v-for="notice in notices" :key="notice.id" class="border border-gray-200 rounded-md p-4">
           <div class="flex justify-between items-start">
             <h4 class="text-lg font-medium text-gray-900">{{ notice.title }}</h4>
-            <div v-if="userRole === 'admin' || (userRole === 'teacher' && notice.created_by === userId)" class="flex space-x-2">
+            <div v-if="canEditNotice(notice)" class="flex space-x-2">
               <button 
                 @click="editNotice(notice)" 
                 class="text-blue-600 hover:text-blue-800"
@@ -100,11 +100,28 @@ export default {
         });
         
         this.notices = response.data;
+        console.log('Loaded notices:', this.notices); // Debug log
       } catch (error) {
         console.error('Error loading notices:', error);
       } finally {
         this.isLoading = false;
       }
+    },
+    
+    canEditNotice(notice) {
+      // Admin can edit any notice
+      if (this.userRole === 'admin') {
+        return true;
+      }
+      
+      // Teachers can edit notices they created - fix the comparison
+      if (this.userRole === 'teacher') {
+        // Convert both to numbers/strings for safe comparison
+        return String(notice.created_by) === String(this.userId);
+      }
+      
+      // Students can't edit any notices
+      return false;
     },
     
     async deleteNotice(noticeId) {

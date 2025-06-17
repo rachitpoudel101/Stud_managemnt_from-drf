@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db import models  # Add this import
 from .models import StudentProfile, Marks, Subject, notice
 from .serializers import NoticeSerializer, StudentProfileSerializer, MarksSerializer, SubjectSerializer
 from users.permissions import IsTeacher, IsAdmin, IsTeacherOrAdmin
@@ -351,9 +352,14 @@ class NoticeViewSet(viewsets.ModelViewSet):
         if user.role == 'student':
             return notice.objects.filter(audience__in=['student', 'both'], published=True)
         elif user.role == 'teacher':
-            return notice.objects.filter(audience__in=['teacher', 'both'], published=True)
+            # Allow teachers to see notices targeted to teachers AND notices they created
+            return notice.objects.filter(
+                models.Q(audience__in=['teacher', 'both'], published=True) | 
+                models.Q(created_by=user)
+            ).distinct()
         # Admin can see all notices
         return notice.objects.all()
+        
     def perform_create(self, serializer):
         user = self.request.user
         audience = serializer.validated_data.get('audience')

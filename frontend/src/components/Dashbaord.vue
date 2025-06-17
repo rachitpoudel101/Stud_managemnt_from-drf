@@ -625,6 +625,69 @@
         </div>
       </div>
     </div>
+    
+    <!-- Edit Notice Modal -->
+    <div v-if="showEditNoticeModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Edit Notice</h3>
+        <div class="space-y-4">
+          <div>
+            <label for="notice-title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <input 
+              type="text" 
+              id="notice-title" 
+              v-model="editNoticeForm.title" 
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label for="notice-content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+            <textarea 
+              id="notice-content" 
+              v-model="editNoticeForm.content" 
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            ></textarea>
+          </div>
+          <div v-if="userRole === 'admin'">
+            <label for="notice-audience" class="block text-sm font-medium text-gray-700 mb-1">Audience</label>
+            <select 
+              id="notice-audience" 
+              v-model="editNoticeForm.audience"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              <option value="student">Students Only</option>
+              <option value="teacher">Teachers Only</option>
+              <option value="both">Both Students & Teachers</option>
+            </select>
+          </div>
+          <div class="flex items-center">
+            <input 
+              type="checkbox" 
+              id="notice-published" 
+              v-model="editNoticeForm.published"
+              class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <label for="notice-published" class="ml-2 block text-sm text-gray-900">Published</label>
+          </div>
+        </div>
+        <div class="mt-6 flex justify-end space-x-3">
+          <button 
+            @click="closeEditNoticeModal" 
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button 
+            @click="updateNotice" 
+            :disabled="isUpdating"
+            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          >
+            {{ isUpdating ? 'Updating...' : 'Update' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -683,6 +746,13 @@ export default {
       
       // For notice management
       editingNotice: null,
+      showEditNoticeModal: false,
+      editNoticeForm: {
+        title: '',
+        content: '',
+        audience: 'student',
+        published: true
+      }
     };
   },
   created() {
@@ -1273,10 +1343,72 @@ export default {
     
     prepareEditNotice(notice) {
       this.editingNotice = notice;
-      // Logic for editing a notice could be implemented here
-      // or as a separate modal component
-      console.log('Edit notice:', notice);
-      alert('Notice editing will be implemented in a future update.');
+      
+      // Initialize the form with the notice data
+      this.editNoticeForm = {
+        title: notice.title,
+        content: notice.content,
+        audience: notice.audience,
+        published: notice.published
+      };
+      
+      // Show the modal
+      this.showEditNoticeModal = true;
+    },
+    
+    closeEditNoticeModal() {
+      this.showEditNoticeModal = false;
+      this.editingNotice = null;
+      this.editNoticeForm = {
+        title: '',
+        content: '',
+        audience: 'student',
+        published: true
+      };
+    },
+    
+    async updateNotice() {
+      if (!this.editingNotice) return;
+      
+      this.isUpdating = true;
+      this.errorMessage = '';
+      
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        
+        // Teachers can only update title and content, not audience
+        const updateData = this.userRole === 'admin' 
+          ? this.editNoticeForm 
+          : {
+              title: this.editNoticeForm.title,
+              content: this.editNoticeForm.content,
+              published: this.editNoticeForm.published
+            };
+        
+        await axios.patch(
+          `http://127.0.0.1:8000/api/notices/${this.editingNotice.id}/`,
+          updateData,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        this.successMessage = 'Notice updated successfully!';
+        
+        // Refresh notices list
+        this.loadNotices();
+        
+        // Close the modal
+        this.closeEditNoticeModal();
+      } catch (error) {
+        console.error('Error updating notice:', error);
+        
+        if (error.response?.status === 403) {
+          this.errorMessage = 'You do not have permission to update this notice';
+        } else {
+          this.errorMessage = error.response?.data?.detail || 'Failed to update notice';
+        }
+      } finally {
+        this.isUpdating = false;
+      }
     }
   }
 };

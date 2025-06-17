@@ -45,7 +45,7 @@ class NoticeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = notice
-        fields = '__all__'
+        fields = ['id', 'title', 'content', 'created_at', 'created_by', 'updated_at', 'published', 'audience', 'created_by_name']
         read_only_fields = ['created_by']
         
     def get_created_by_name(self, obj):

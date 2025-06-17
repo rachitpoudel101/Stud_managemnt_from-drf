@@ -1,16 +1,16 @@
 # Student Management System
 
-A comprehensive web application for managing student records, academic performance, and course assignments in educational institutions.
+A comprehensive web application for managing student records, academic performance, and communications in educational institutions.
 
 ## Overview
 
-The Student Management System is designed to simplify administrative tasks in schools and colleges by providing a centralized platform for managing students, teachers, subjects, and academic results. The system supports different user roles with specific permissions, ensuring data security and appropriate access levels.
+The Student Management System is designed to simplify administrative tasks in schools and colleges by providing a centralized platform for managing students, teachers, subjects, academic results, and communications. The system supports different user roles with specific permissions, ensuring data security and appropriate access levels.
 
 ## Features
 
 ### User Management
 - Multiple user roles: Admin, Teacher, Student
-- User registration and authentication
+- User registration and authentication using JWT
 - Profile management
 - Soft delete functionality for users
 
@@ -25,23 +25,15 @@ The Student Management System is designed to simplify administrative tasks in sc
 - Result publishing
 - Performance reports
 
+### Communication
+- Notice board functionality
+- Role-specific notices (for students, teachers, or both)
+- Notice creation and management
+
 ### Role-Specific Features
-- **Admin Dashboard**: Complete system oversight, user management, subject creation
-- **Teacher Dashboard**: Mark entry, student management, subject teaching
-- **Student Dashboard**: View assigned subjects, check published results
-
-## System Architecture
-
-### Backend
-- RESTful API built with Django REST Framework
-- JWT-based authentication
-- Role-based permission system
-- PostgreSQL/SQLite database
-
-### Frontend
-- Vue.js single-page application
-- Responsive design with Tailwind CSS
-- Component-based architecture
+- **Admin Dashboard**: Complete system oversight, user management, subject creation, notice management
+- **Teacher Dashboard**: Mark entry, student management, notice creation for students
+- **Student Dashboard**: View assigned subjects, check published results, view notices
 
 ## Technology Stack
 
@@ -158,6 +150,13 @@ The Student Management System is designed to simplify administrative tasks in sc
 - `POST /api/marks/publish/`: Publish marks
 - `POST /api/marks/bulk-create/`: Create multiple marks at once
 
+### Notices
+- `GET /api/notices/`: List notices
+- `POST /api/notices/`: Create notice
+- `GET /api/notices/{id}/`: Get notice details
+- `PATCH /api/notices/{id}/`: Update notice
+- `DELETE /api/notices/{id}/`: Delete notice
+
 ## User Roles and Permissions
 
 ### Admin
@@ -165,16 +164,20 @@ The Student Management System is designed to simplify administrative tasks in sc
 - Can create, update, delete, and restore all users
 - Can create and manage subjects
 - Can view all student profiles and marks
+- Can create notices for all user types
 
 ### Teacher
 - Can update their own profile
 - Can manage students enrolled in their subjects
 - Can add and publish marks for their taught subjects
 - Can assign their taught subjects to students
+- Can create notices for students only
+- Can edit and delete notices they created
 
 ### Student
 - Can view their own profile and subjects
 - Can view their published marks
+- Can view notices meant for students
 - Limited access to system information
 
 ## Usage Examples
@@ -184,23 +187,28 @@ The Student Management System is designed to simplify administrative tasks in sc
 2. Create student accounts and set up their profiles
 3. Create new subjects and assign teachers
 4. View and manage all users and academic data
+5. Create notices for students, teachers, or both
 
 ### Teacher Tasks
 1. View assigned subjects
 2. Manage students enrolled in taught subjects
 3. Enter and publish marks for students
-4. Update student information
+4. Create notices for students
+5. Update student information
 
 ### Student Tasks
 1. View profile and assigned subjects
 2. Check published academic results
+3. View notices posted for students
 
-## First-Time Setup
+## Contributing
 
-When setting up the system for the first time:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-1. The first user to register will automatically become an admin
-2. The admin should create subjects before adding teachers
-3. When creating teacher accounts, assign them to subjects
-4. Create student accounts and assign them to grades and subjects
-5. Teachers can then begin entering marks for students
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

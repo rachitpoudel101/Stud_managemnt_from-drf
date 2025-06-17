@@ -1,9 +1,10 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db import models  # Add this import
-from .models import StudentProfile, Marks, Subject, notice
-from .serializers import NoticeSerializer, StudentProfileSerializer, MarksSerializer, SubjectSerializer
+from .models import StudentProfile, Marks, Subject, notice, Assignment, StudentSubmission
+from .serializers import (NoticeSerializer, StudentProfileSerializer, MarksSerializer, 
+                        SubjectSerializer, AssignmentSerializer, StudentSubmissionSerializer)
 from users.permissions import IsTeacher, IsAdmin, IsTeacherOrAdmin
 
 class SubjectViewSet(viewsets.ModelViewSet):
@@ -370,5 +371,160 @@ class NoticeViewSet(viewsets.ModelViewSet):
         # Teacher can only choose student as audience
         elif user.role == 'teacher':
             if audience != 'student':
-                raise serializers.ValidationError("Teachers can only create notices for students.")
+                raise serializer.ValidationError("Teachers can only create notices for students.")
             serializer.save(created_by=user)
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsTeacherOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Assignment.objects.none()
+            
+        if user.role == 'student':
+            # Students can see assignments for subjects they're enrolled in AND published assignments
+            try:
+                student_profile = StudentProfile.objects.get(user=user)
+                # Get student's enrolled subjects
+                student_subjects = student_profile.subjects.all()
+                
+                return Assignment.objects.filter(
+                    subject__in=student_subjects,
+                    published=True
+                ).distinct()
+            except StudentProfile.DoesNotExist:
+                return Assignment.objects.none()
+                
+        elif user.role == 'teacher':
+            # Teachers can see assignments they created or for subjects they teach
+            return Assignment.objects.filter(
+                models.Q(created_by=user) | models.Q(subject__teacher=user)
+            ).distinct()
+        # Admin can see all assignments
+        return Assignment.objects.all()
+        
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+    
+    def perform_update(self, serializer):
+        user = self.request.user
+        assignment = self.get_object()
+        
+        # Check permissions for updating assignments
+        if user.role == 'admin':
+            # Admin can edit any assignment
+            pass
+        elif user.role == 'teacher':
+            # Teachers can only edit assignments they created
+            if assignment.created_by != user:
+                raise serializers.ValidationError("You can only edit assignments that you created")
+        else:
+            raise serializers.ValidationError("You don't have permission to edit assignments")
+        
+        serializer.save()
+    
+    def perform_destroy(self, serializer):
+        user = self.request.user
+        assignment = self.get_object()
+        
+        # Check permissions for deleting assignments (similar to update)
+        if user.role == 'admin':
+            # Admin can delete any assignment
+            pass
+        elif user.role == 'teacher':
+            # Teachers can only delete assignments they created
+            if assignment.created_by != user:
+                raise serializers.ValidationError("You can only delete assignments that you created")
+        else:
+            raise serializers.ValidationError("You don't have permission to delete assignments")
+        
+        assignment.delete()
+
+class StudentSubmissionViewSet(viewsets.ModelViewSet):
+    queryset = StudentSubmission.objects.all()
+    serializer_class = StudentSubmissionSerializer
+
+    def get_permissions(self):
+        if self.action == 'create':
+            # Students can create (submit) assignments
+            return [permissions.IsAuthenticated()]
+        if self.action in ['update', 'partial_update', 'destroy']:
+            # Only students can edit/delete their own submissions
+            return [permissions.IsAuthenticated()]
+        # Anyone authenticated can view submissions based on get_queryset filtering
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return StudentSubmission.objects.none()
+            
+        if user.role == 'student':
+            # Students can only see their own submissions
+            try:
+                student_profile = StudentProfile.objects.get(user=user)
+                return StudentSubmission.objects.filter(student=student_profile)
+            except StudentProfile.DoesNotExist:
+                return StudentSubmission.objects.none()
+        elif user.role == 'teacher':
+            # Teachers can see submissions for assignments they created or in subjects they teach
+            return StudentSubmission.objects.filter(
+                models.Q(assignment__created_by=user) | 
+                models.Q(assignment__subject__teacher=user)
+            ).distinct()
+        # Admin can see all submissions (READ-ONLY)
+        return StudentSubmission.objects.all()
+        
+    def perform_create(self, serializer):
+        # Set the student automatically based on the authenticated user
+        user = self.request.user
+        if user.role != 'student':
+            raise serializers.ValidationError("Only students can submit assignments")
+            
+        try:
+            student_profile = StudentProfile.objects.get(user=user)
+            # Check if student is enrolled in the assignment's subject
+            assignment = serializer.validated_data['assignment']
+            if assignment.subject not in student_profile.subjects.all():
+                raise serializers.ValidationError("You are not enrolled in this subject")
+            serializer.save(student=student_profile)
+        except StudentProfile.DoesNotExist:
+            raise serializers.ValidationError("Student profile not found for the current user")
+    
+    def perform_update(self, serializer):
+        user = self.request.user
+        submission = self.get_object()
+        
+        # Only students can edit their own submissions
+        if user.role == 'student':
+            # Students can only edit their own submissions
+            if submission.student.user != user:
+                raise serializers.ValidationError("You can only edit your own submissions")
+        else:
+            # Teachers and admins cannot edit student submissions
+            raise serializers.ValidationError("Only students can edit their submissions")
+        
+        # Save the submission (the serializer's update method will handle file preservation)
+        serializer.save()
+    
+    def perform_destroy(self, serializer):
+        user = self.request.user
+        submission = self.get_object()
+        
+        # Only students can delete their own submissions
+        if user.role == 'student':
+            if submission.student.user != user:
+                raise serializers.ValidationError("You can only delete your own submissions")
+        else:
+            # Teachers and admins cannot delete student submissions
+            raise serializers.ValidationError("Only students can delete their submissions")
+        
+        submission.delete()
+

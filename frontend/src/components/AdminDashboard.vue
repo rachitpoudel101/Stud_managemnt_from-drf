@@ -122,6 +122,18 @@
       </div>
     </div>
 
+    <!-- Assignment Overview Section -->
+    <div class="mt-8">
+      <h2 class="text-xl font-bold mb-4">Assignment Overview</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <AssignmentList 
+          :userRole="'admin'" 
+          :teacherSubjects="subjects"
+        />
+        <SubmissionList :userRole="'admin'" />
+      </div>
+    </div>
+
     <!-- Notices Section for Admin -->
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
@@ -318,8 +330,15 @@
 </template>
 
 <script>
+import AssignmentList from './AssignmentList.vue';
+import SubmissionList from './SubmissionList.vue';
+
 export default {
   name: 'AdminDashboard',
+  components: {
+    AssignmentList,
+    SubmissionList
+  },
   props: {
     userCount: Number,
     teacherCount: Number,

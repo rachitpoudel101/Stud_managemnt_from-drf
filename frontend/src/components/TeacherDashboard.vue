@@ -45,6 +45,20 @@
       </div>
     </div>
     
+    <!-- Assignment Management Section -->
+    <div class="mt-8">
+      <h2 class="text-xl font-bold mb-4">Assignment Management</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <AssignmentList 
+          :userRole="'teacher'" 
+          :teacherSubjects="teacherSubjects"
+          @submit-assignment="handleSubmitAssignment"
+          @edit-assignment="handleEditAssignment"
+        />
+        <SubmissionList :userRole="'teacher'" />
+      </div>
+    </div>
+    
     <!-- Notices Section for Teacher -->
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Notice Board Management</h2>
@@ -57,14 +71,32 @@
 </template>
 
 <script>
+import AssignmentList from './AssignmentList.vue';
+import SubmissionList from './SubmissionList.vue';
+
 export default {
   name: 'TeacherDashboard',
+  components: {
+    AssignmentList,
+    SubmissionList
+  },
   props: {
     teacherSubjects: {
       type: Array,
       default: () => []
     },
     isLoadingSubjects: Boolean
+  },
+  methods: {
+    handleSubmitAssignment(assignment) {
+      // This shouldn't happen for teachers, but handle gracefully
+      console.log('Teacher cannot submit assignments');
+    },
+    
+    handleEditAssignment(assignment) {
+      // Implement edit functionality
+      console.log('Edit assignment:', assignment);
+    }
   }
 }
 </script>

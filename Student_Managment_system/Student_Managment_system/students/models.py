@@ -76,3 +76,41 @@ class notice(models.Model):
     class Meta:
         verbose_name_plural = 'Notices'
         ordering = ['-created_at']  # Newest notices first
+
+class Assignment(models.Model):
+    FOR_CHOICES = (
+        ('student', 'Student'),
+        ('teacher', 'Teacher'),
+        ('both', 'Both'),
+    )
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='assignments/', blank=True, null=True)  # Make file optional
+    due_date = models.DateTimeField()
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='assignments')
+    remarks = models.TextField(blank=True, null=True)
+    audience = models.CharField(max_length=10, choices=FOR_CHOICES)
+    published = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        verbose_name_plural = 'Assignments'
+        ordering = ['-created_at']
+
+class StudentSubmission(models.Model):
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='submissions')
+    file = models.FileField(upload_to='submissions/')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    comments = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('assignment', 'student')
+        verbose_name_plural = 'Student Submissions'
+
+    def __str__(self):
+        return f"{self.student.user.username} - {self.assignment.title}"

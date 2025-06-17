@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import StudentProfile, Marks, Subject, notice
+from .models import StudentProfile, Marks, Subject, notice, Assignment, StudentSubmission
 from users.models import User
 
 class UserBasicSerializer(serializers.ModelSerializer):
@@ -51,3 +51,35 @@ class NoticeSerializer(serializers.ModelSerializer):
     def get_created_by_name(self, obj):
         user = obj.created_by
         return f"{user.first_name} {user.last_name}" if user.first_name and user.last_name else user.username
+
+
+class AssignmentSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.ReadOnlyField(source='created_by.username')
+    subject_name = serializers.ReadOnlyField(source='subject.name')
+    
+    class Meta:
+        model = Assignment
+        fields = ['id', 'title', 'description', 'created_at', 'created_by', 
+                  'created_by_name', 'file', 'due_date', 'subject', 'subject_name',
+                  'remarks', 'audience', 'published']
+        read_only_fields = ['created_by', 'created_at']
+
+class StudentSubmissionSerializer(serializers.ModelSerializer):
+    student_name = serializers.ReadOnlyField(source='student.user.username')
+    assignment_title = serializers.ReadOnlyField(source='assignment.title')
+    
+    class Meta:
+        model = StudentSubmission
+        fields = ['id', 'assignment', 'assignment_title', 'student', 
+                  'student_name', 'file', 'submitted_at', 'comments']
+        read_only_fields = ['student', 'submitted_at']
+    
+    def update(self, instance, validated_data):
+        # Handle file updates carefully - only update if a new file is provided
+        if 'file' in validated_data and validated_data['file'] is not None:
+            instance.file = validated_data['file']
+        
+        # Update other fields
+        instance.comments = validated_data.get('comments', instance.comments)
+        instance.save()
+        return instance

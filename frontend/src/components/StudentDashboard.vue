@@ -56,17 +56,49 @@
       </div>
     </div>
     
+    <!-- Assignment Section -->
+    <div class="mt-8">
+      <h2 class="text-xl font-bold mb-4">Assignments</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <AssignmentList 
+          :userRole="'student'" 
+          @submit-assignment="handleSubmitAssignment"
+        />
+        <SubmissionList 
+          :userRole="'student'" 
+          ref="submissionList"
+        />
+      </div>
+    </div>
+    
     <!-- Notices Section for Student - View Only -->
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Notice Board</h2>
       <slot name="notice-list"></slot>
     </div>
+    
+    <!-- Submit Assignment Modal -->
+    <SubmitAssignment 
+      v-if="showSubmitModal && selectedAssignment"
+      :assignment="selectedAssignment"
+      @close="closeSubmitModal"
+      @submitted="handleAssignmentSubmitted"
+    />
   </div>
 </template>
 
 <script>
+import AssignmentList from './AssignmentList.vue';
+import SubmissionList from './SubmissionList.vue';
+import SubmitAssignment from './SubmitAssignment.vue';
+
 export default {
   name: 'StudentDashboard',
+  components: {
+    AssignmentList,
+    SubmissionList,
+    SubmitAssignment
+  },
   props: {
     studentProfile: Object,
     studentSubjects: {
@@ -74,6 +106,28 @@ export default {
       default: () => []
     },
     isLoadingStudentProfile: Boolean
+  },
+  data() {
+    return {
+      showSubmitModal: false,
+      selectedAssignment: null
+    };
+  },
+  methods: {
+    handleSubmitAssignment(assignment) {
+      this.selectedAssignment = assignment;
+      this.showSubmitModal = true;
+    },
+    
+    closeSubmitModal() {
+      this.showSubmitModal = false;
+      this.selectedAssignment = null;
+    },
+    
+    handleAssignmentSubmitted() {
+      // Refresh the submission list
+      this.$refs.submissionList?.loadSubmissions();
+    }
   }
 }
 </script>

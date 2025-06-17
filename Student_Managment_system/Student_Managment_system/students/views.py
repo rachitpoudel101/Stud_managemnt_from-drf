@@ -430,21 +430,29 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         
         serializer.save()
     
-    def perform_destroy(self, serializer):
+    def perform_destroy(self, instance):
         user = self.request.user
-        assignment = self.get_object()
+        assignment = instance
         
-        # Check permissions for deleting assignments (similar to update)
+        print(f"Delete request from user: {user.username} (ID: {user.id}, Role: {user.role})")
+        print(f"Assignment created by: {assignment.created_by.username} (ID: {assignment.created_by.id})")
+        
+        # Check permissions for deleting assignments
         if user.role == 'admin':
             # Admin can delete any assignment
+            print("Admin permission granted for delete")
             pass
         elif user.role == 'teacher':
             # Teachers can only delete assignments they created
             if assignment.created_by != user:
+                print(f"Teacher permission denied: {assignment.created_by.id} != {user.id}")
                 raise serializers.ValidationError("You can only delete assignments that you created")
+            print("Teacher permission granted for delete")
         else:
+            print("No delete permission")
             raise serializers.ValidationError("You don't have permission to delete assignments")
         
+        # Delete the assignment
         assignment.delete()
 
 class StudentSubmissionViewSet(viewsets.ModelViewSet):

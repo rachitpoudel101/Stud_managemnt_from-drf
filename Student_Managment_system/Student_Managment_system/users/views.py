@@ -33,8 +33,8 @@ class UserViewSet(viewsets.ModelViewSet):
         if not user.is_authenticated:
             return User.objects.none()
             
-        # By default, only show active users
-        queryset = User.objects.filter(is_active=True)
+        # By default, only show non-deleted users
+        queryset = User.objects.filter(is_deleted=False)
             
         if user.role == 'admin':
             return queryset
@@ -127,12 +127,11 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             raise PermissionDenied("You do not have permission to delete users.")
             
-        # Perform soft delete by setting is_active=False
-        target_user.is_active = False
-        target_user.save()
+        # Perform soft delete
+        target_user.delete()  # This calls our custom delete method
         
         return Response(
-            {"message": f"User {target_user.username} has been successfully deactivated."},
+            {"message": f"User {target_user.username} has been successfully deleted."},
             status=status.HTTP_200_OK
         )
         
@@ -144,17 +143,16 @@ class UserViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Only administrators can restore users.")
             
         try:
-            # Get the user including inactive ones
+            # Get the user including deleted ones
             user_to_restore = User.objects.get(pk=pk)
             
-            if user_to_restore.is_active:
+            if not user_to_restore.is_deleted:
                 return Response(
-                    {"message": "This user is already active."},
+                    {"message": "This user is not deleted."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
                 
-            user_to_restore.is_active = True
-            user_to_restore.save()
+            user_to_restore.restore()  # This calls our custom restore method
             
             return Response(
                 {"message": f"User {user_to_restore.username} has been successfully restored."},
@@ -172,7 +170,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.user.role != 'admin':
             raise PermissionDenied("Only administrators can view deleted users.")
             
-        deleted_users = User.objects.filter(is_active=False)
+        deleted_users = User.objects.filter(is_deleted=True)
         serializer = self.get_serializer(deleted_users, many=True)
         
         return Response(serializer.data)

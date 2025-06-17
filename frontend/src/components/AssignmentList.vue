@@ -29,8 +29,8 @@
       
       <div v-else class="space-y-4">
         <div v-for="assignment in assignments" :key="assignment.id" class="border border-gray-200 rounded-md p-4">
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
+          <div class="flex justify-between items-start gap-4">
+            <div class="flex-1 min-w-0">
               <h4 class="text-lg font-medium text-gray-900">{{ assignment.title }}</h4>
               <p class="text-sm text-gray-600 mt-1">{{ assignment.description }}</p>
               <div class="mt-2 text-xs text-gray-500 flex flex-wrap gap-4">
@@ -40,20 +40,20 @@
               </div>
               <!-- Display assignment file info -->
               <div v-if="assignment.file" class="mt-3 p-2 bg-blue-50 rounded border">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <span class="text-sm text-blue-700">📁 Assignment File: {{ getFileName(assignment.file) }}</span>
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 min-w-0">
+                    <span class="text-sm text-blue-700 block truncate">📁 {{ getFileName(assignment.file) }}</span>
                   </div>
-                  <div class="flex space-x-2">
+                  <div class="flex gap-1 flex-shrink-0">
                     <button 
                       @click="viewFile(assignment.file)" 
-                      class="text-blue-600 hover:text-blue-800 text-sm"
+                      class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 whitespace-nowrap"
                     >
                       View
                     </button>
                     <button 
                       @click="downloadFile(assignment.file)" 
-                      class="text-green-600 hover:text-green-800 text-sm"
+                      class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 whitespace-nowrap"
                     >
                       Download
                     </button>
@@ -61,25 +61,25 @@
                 </div>
               </div>
             </div>
-            <div class="flex space-x-2 ml-4">
+            <div class="flex flex-col gap-1 flex-shrink-0">
               <button 
                 v-if="userRole === 'student'"
                 @click="submitAssignment(assignment)" 
-                class="text-green-600 hover:text-green-800 text-sm"
+                class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 whitespace-nowrap"
               >
                 Submit
               </button>
               <button 
                 v-if="canEditAssignment(assignment)"
                 @click="editAssignment(assignment)" 
-                class="text-blue-600 hover:text-blue-800 text-sm"
+                class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 whitespace-nowrap"
               >
                 Edit
               </button>
               <button 
                 v-if="canEditAssignment(assignment)"
                 @click="deleteAssignment(assignment.id)" 
-                class="text-red-600 hover:text-red-800 text-sm"
+                class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 whitespace-nowrap"
               >
                 Delete
               </button>
@@ -321,6 +321,7 @@ export default {
     };
   },
   mounted() {
+    console.log('AssignmentList mounted with userRole:', this.userRole);
     this.getUserId();
     this.loadAssignments();
   },
@@ -331,6 +332,7 @@ export default {
         try {
           const user = JSON.parse(userStr);
           this.userId = user.id;
+          console.log('User ID set to:', this.userId, 'Role:', this.userRole);
         } catch (e) {
           console.error('Error parsing user data:', e);
         }
@@ -356,35 +358,60 @@ export default {
     },
     
     canEditAssignment(assignment) {
-      console.log('canEditAssignment check:', {
+      // Add more detailed logging
+      const debugInfo = {
         userRole: this.userRole,
         userId: this.userId,
+        userIdType: typeof this.userId,
         assignmentCreatedBy: assignment.created_by,
-        isAdmin: this.userRole === 'admin'
-      });
+        createdByType: typeof assignment.created_by,
+        comparison: String(assignment.created_by) === String(this.userId),
+        isAdmin: this.userRole === 'admin',
+        isTeacher: this.userRole === 'teacher'
+      };
       
-      // Admin can edit any assignment
-      if (this.userRole === 'admin') return true;
+      console.log('canEditAssignment detailed check:', debugInfo);
+      
+      // Force return true for admin to test
+      if (this.userRole === 'admin') {
+        console.log('Admin permission granted (forced)');
+        return true;
+      }
+      
       // Teachers can only edit assignments they created
       if (this.userRole === 'teacher') {
-        return String(assignment.created_by) === String(this.userId);
+        const canEdit = String(assignment.created_by) === String(this.userId);
+        console.log('Teacher edit permission:', canEdit);
+        return canEdit;
       }
+      
+      console.log('No edit permission granted');
       return false;
     },
     
     async deleteAssignment(assignmentId) {
       if (!confirm('Are you sure you want to delete this assignment?')) return;
       
+      console.log('Attempting to delete assignment:', assignmentId, 'as', this.userRole);
+      
       try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        await axios.delete(`http://127.0.0.1:8000/api/assignments/${assignmentId}/`, {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/assignments/${assignmentId}/`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
+        console.log('Delete response:', response.status);
         this.assignments = this.assignments.filter(a => a.id !== assignmentId);
+        alert('Assignment deleted successfully!');
       } catch (error) {
         console.error('Error deleting assignment:', error);
-        alert('Failed to delete assignment. Please try again.');
+        if (error.response?.data?.detail) {
+          alert(`Failed to delete assignment: ${error.response.data.detail}`);
+        } else if (error.response?.data?.error) {
+          alert(`Failed to delete assignment: ${error.response.data.error}`);
+        } else {
+          alert('Failed to delete assignment. Please try again.');
+        }
       }
     },
     
@@ -545,6 +572,8 @@ export default {
       this.isUpdating = true;
       this.editErrorMessage = '';
       
+      console.log('Attempting to update assignment:', this.editingAssignment.id, 'as', this.userRole);
+      
       try {
         const token = localStorage.getItem('token') || sessionStorage.getItem('token');
         const formData = new FormData();
@@ -581,22 +610,51 @@ export default {
         alert('Assignment updated successfully!');
       } catch (error) {
         console.error('Error updating assignment:', error);
-        if (error.response?.data) {
-          console.error('Error details:', error.response.data);
-          if (error.response.data.detail) {
-            this.editErrorMessage = error.response.data.detail;
-          } else if (error.response.data.error) {
-            this.editErrorMessage = error.response.data.error;
-          } else {
-            this.editErrorMessage = `Failed to update assignment: ${JSON.stringify(error.response.data)}`;
-          }
+        if (error.response?.data?.detail) {
+          this.editErrorMessage = error.response.data.detail;
+        } else if (error.response?.data?.error) {
+          this.editErrorMessage = error.response.data.error;
+        } else if (error.response?.data) {
+          this.editErrorMessage = `Failed to update assignment: ${JSON.stringify(error.response.data)}`;
         } else {
           this.editErrorMessage = 'Failed to update assignment. Please try again.';
         }
       } finally {
         this.isUpdating = false;
       }
-    },
+    }
   }
 };
 </script>
+
+<style scoped>
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

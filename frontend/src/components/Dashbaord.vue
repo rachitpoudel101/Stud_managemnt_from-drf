@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col bg-gray-50">
+  <div class="min-h-screen flex flex-col bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0">
+    <header class="bg-white shadow-sm border-b border-gray-200 flex-shrink-0 sticky top-0 z-40">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
@@ -21,7 +21,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <!-- Success/Error Messages -->
         <div v-if="successMessage" class="mb-6">
@@ -1035,3 +1035,35 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Ensure smooth scrolling and prevent double scrollbars */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Ensure modals don't create additional scrollbars */
+.modal-container {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+</style>

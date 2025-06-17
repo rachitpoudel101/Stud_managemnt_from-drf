@@ -22,30 +22,30 @@
       
       <div v-else class="space-y-4">
         <div v-for="submission in submissions" :key="submission.id" class="border border-gray-200 rounded-md p-4">
-          <div class="flex justify-between items-start">
-            <div class="flex-1">
+          <div class="flex justify-between items-start gap-4">
+            <div class="flex-1 min-w-0">
               <h4 class="text-lg font-medium text-gray-900">{{ submission.assignment_title }}</h4>
               <p v-if="submission.comments" class="text-sm text-gray-600 mt-1">{{ submission.comments }}</p>
               <div class="mt-2 text-xs text-gray-500 flex flex-wrap gap-4">
                 <span v-if="userRole !== 'student'">Student: {{ submission.student_name }}</span>
                 <span>Submitted: {{ formatDate(submission.submitted_at) }}</span>
               </div>
-              <!-- Display file info with proper viewing options -->
+              <!-- Display submission file info -->
               <div v-if="submission.file" class="mt-3 p-2 bg-gray-50 rounded border">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <span class="text-sm text-gray-600">📎 File: {{ getFileName(submission.file) }}</span>
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 min-w-0">
+                    <span class="text-sm text-gray-700 block truncate">📎 {{ getFileName(submission.file) }}</span>
                   </div>
-                  <div class="flex space-x-2">
+                  <div class="flex gap-1 flex-shrink-0">
                     <button 
                       @click="viewFile(submission.file)" 
-                      class="text-blue-600 hover:text-blue-800 text-sm"
+                      class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 whitespace-nowrap"
                     >
                       View
                     </button>
                     <button 
                       @click="downloadFile(submission.file)" 
-                      class="text-green-600 hover:text-green-800 text-sm"
+                      class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 whitespace-nowrap"
                     >
                       Download
                     </button>
@@ -53,19 +53,19 @@
                 </div>
               </div>
             </div>
-            <div class="flex space-x-2 ml-4">
+            <div class="flex flex-col gap-1 flex-shrink-0">
               <!-- Only students can edit/delete their submissions -->
               <button 
                 v-if="userRole === 'student'"
                 @click="editSubmission(submission)" 
-                class="text-blue-600 hover:text-blue-800 text-sm"
+                class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 whitespace-nowrap"
               >
                 Edit
               </button>
               <button 
                 v-if="userRole === 'student'"
                 @click="deleteSubmission(submission.id)" 
-                class="text-red-600 hover:text-red-800 text-sm"
+                class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 whitespace-nowrap"
               >
                 Delete
               </button>
@@ -205,11 +205,6 @@ export default {
       }
     },
     
-    canEditSubmission(submission) {
-      // Only students can edit their own submissions
-      return this.userRole === 'student';
-    },
-    
     editSubmission(submission) {
       this.editingSubmission = submission;
       this.editSubmissionData = {
@@ -287,19 +282,16 @@ export default {
     },
     
     getFileUrl(fileUrl) {
-      if (!fileUrl) return '';
-      
       if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
         return fileUrl;
       } else {
-        // Remove leading slash if present and construct proper URL
-        const cleanPath = fileUrl.startsWith('/') ? fileUrl.substring(1) : fileUrl;
-        return `http://127.0.0.1:8000/media/${cleanPath}`;
+        const baseUrl = 'http://127.0.0.1:8000';
+        const cleanPath = fileUrl.startsWith('/') ? fileUrl : `/${fileUrl}`;
+        return `${baseUrl}${cleanPath}`;
       }
     },
     
     getFileName(fileUrl) {
-      if (!fileUrl) return 'Unknown file';
       // Extract filename from URL
       const parts = fileUrl.split('/');
       return parts[parts.length - 1];
@@ -307,15 +299,11 @@ export default {
     
     viewFile(fileUrl) {
       const fullUrl = this.getFileUrl(fileUrl);
-      console.log('Viewing file:', fullUrl);
-      
-      // Open file in new tab for viewing
       window.open(fullUrl, '_blank');
     },
     
     downloadFile(fileUrl) {
       const fullUrl = this.getFileUrl(fileUrl);
-      console.log('Downloading file:', fullUrl);
       
       // Create a temporary anchor element to trigger download
       const link = document.createElement('a');
@@ -353,3 +341,35 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

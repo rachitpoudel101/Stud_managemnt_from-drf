@@ -381,8 +381,7 @@ export default {
     // Get user role from storage first
     this.userRole =
       localStorage.getItem("userRole") || sessionStorage.getItem("userRole") || "user";
-    
-    // Then fetch all stats when component is created for admin
+
     if (this.userRole === "admin") {
       this.fetchUserCount();
       this.fetchTeacherCount();
@@ -390,24 +389,20 @@ export default {
       this.fetchSubjectCount();
     }
 
-    // Fetch teacher's subjects if the user is a teacher
     if (this.userRole === "teacher") {
       this.fetchTeacherSubjects();
     }
 
-    // Fetch student profile if the user is a student
     if (this.userRole === "student") {
       this.fetchStudentProfile();
     }
-    
-    // If admin, load all users and subjects for management
     if (this.userRole === 'admin') {
-      this.loadAllUsers(); // New unified method instead of separate teacher/student loads
+      this.loadAllUsers(); 
       this.loadSubjects();
     }
   },
   methods: {
-    // Add this new method to display user's name
+
     getUserName() {
       const userStr = localStorage.getItem("user") || sessionStorage.getItem("user");
       if (userStr) {
@@ -443,7 +438,6 @@ export default {
     },
     async logout() {
       try {
-        // Clear all stored authentication data
         localStorage.removeItem("token");
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("user");
@@ -455,8 +449,6 @@ export default {
 
         this.successMessage = "Successfully logged out!";
         this.errorMessage = "";
-
-        // Navigate to login page with a slight delay to show success message
         setTimeout(() => {
           this.$router.push("/login");
         }, 10);
@@ -494,7 +486,7 @@ export default {
       }
     },
     async fetchUserCount() {
-      // Only fetch if user is admin
+
       if (this.userRole === "admin") {
         try {
           const token = localStorage.getItem("token") || sessionStorage.getItem("token");

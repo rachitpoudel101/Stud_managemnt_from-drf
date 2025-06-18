@@ -2,13 +2,7 @@
     <div class="w-full">
         <nav class="w-full bg-yellow-500 py-4 shadow-md">
             <ul class="list-none m-0 p-0 flex flex-col md:flex-row justify-end items-center gap-3 md:gap-12 pr-8">
-                <!-- Show login/signup buttons only when user is not logged in -->
                 <template v-if="!isLoggedIn">
-                    <li class="m-0 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer ">
-                        <router-link to="/sign-up" class="text-white  block w-full h-full">
-                            {{ btn1 }}
-                        </router-link>
-                    </li>
                     <li class="m-0 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer ">
                         <router-link to="/login" class="text-white no-underline block w-full h-full">
                             {{ btn2 }}
@@ -16,7 +10,6 @@
                     </li>
                 </template>
                 
-                <!-- User Profile Dropdown when logged in -->
                 <li v-if="isLoggedIn" class="relative">
                     <div @click="toggleDropdown" 
                          class="flex items-center gap-2 py-2 px-4 rounded hover:bg-sky-700 hover:bg-opacity-10 font-medium cursor-pointer text-white">
@@ -28,15 +21,14 @@
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
                     </div>
-                    
-                    <!-- Dropdown Menu -->
+
                     <div v-if="showDropdown" 
                          class="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
                         <div class="py-1">
                             <router-link to="/dashboard" 
                                        @click="closeDropdown"
                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 no-underline">
-                                Dashboard
+                                       Dashboard
                             </router-link>
                             <hr class="border-gray-200">
                             <button @click="logout" 
@@ -55,9 +47,6 @@
 export default {
     name: 'Navbar',
     props: {
-        btn1: {
-            default: 'Sign Up'
-        },
         btn2: {
             default: 'Login'
         }
@@ -122,7 +111,6 @@ export default {
         },
         async logout() {
             try {
-                // Clear all stored authentication data
                 localStorage.removeItem('token');
                 localStorage.removeItem('refresh_token');
                 localStorage.removeItem('user');
@@ -131,13 +119,11 @@ export default {
                 sessionStorage.removeItem('refresh_token');
                 sessionStorage.removeItem('user');
                 sessionStorage.removeItem('userRole');
-                
-                // Update component state
+
                 this.isLoggedIn = false;
                 this.userName = '';
                 this.closeDropdown();
-                
-                // Navigate to home page
+
                 this.$router.push('/');
             } catch (error) {
                 console.error('Logout error:', error);

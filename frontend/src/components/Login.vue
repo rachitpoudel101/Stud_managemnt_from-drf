@@ -74,8 +74,6 @@ export default {
             this.successMessage = '';
             this.errorMessage = '';
             
-            // console.log('Attempting login with:', { username: this.loginData.username, password: '***' });
-            
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/token/', this.loginData)
 

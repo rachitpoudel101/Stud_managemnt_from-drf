@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Hero from '../components/Hero.vue'
-import SignUp from '../components/SignUp.vue'
 import Login from '../components/Login.vue'
 import Dashboard from '../components/Dashbaord.vue'
 import AddTeacher from '../components/Add_teacher.vue'
@@ -17,11 +16,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Hero
-    },
-    {
-      path: '/sign-up',
-      name: 'signup',
-      component: SignUp
     },
     {
       path: '/login',
@@ -78,8 +72,6 @@ const router = createRouter({
     }
   ]
 })
-
-// Navigation guard for authentication
 router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('token') || sessionStorage.getItem('token');
   const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');

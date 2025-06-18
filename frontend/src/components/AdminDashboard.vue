@@ -122,7 +122,7 @@
       </div>
     </div>
 
-    <!-- Assignment Overview Section -->
+    <!-- Assignment Overview  -->
     <div class="mt-8">
       <h2 class="text-xl font-bold mb-4">Assignment Overview</h2>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
